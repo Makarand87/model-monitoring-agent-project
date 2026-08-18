@@ -1,6 +1,6 @@
 # Monthly Model Monitoring Table
 
-Illustrative monitoring observations for May-July 2026. Values are synthetic and intended for development and testing only.
+**Illustrative monitoring observations for May-July 2026. Values are synthetic and intended for development and testing only.**
 
 | model_id | period | auc | psi | bad_rate | approval_rate |
 |---|---|---|---|---|---|

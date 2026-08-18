@@ -8,5 +8,6 @@ These provisional rules give the project a transparent policy baseline. They are
 | AUC change from baseline | `< 0.03` | `0.03 to < 0.05` | `>= 0.05` |
 | Bad-rate relative increase | `< 10%` | `10% to < 20%` | `>= 20%` |
 | Approval-rate absolute change | `< 0.03` | `0.03 to < 0.05` | `>= 0.05` |
+| KS Percent change | `< 0.05` | `0.05 to < 0.10` | `>= 0.10` |
 
 Thresholds must be reviewed and approved by Model Risk Management and the model owner before production use.
