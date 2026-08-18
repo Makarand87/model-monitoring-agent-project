@@ -1,4 +1,4 @@
-# Model Monitoring Agent
+# model-monitoring-agent-project
 
 Initial Python foundation for a model-performance monitoring application. This phase deliberately contains no agents, RAG, MCP, API, database, or user interface.
 
