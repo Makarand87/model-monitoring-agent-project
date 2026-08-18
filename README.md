@@ -1,15 +1,22 @@
 # model-monitoring-agent-project
 
-Initial Python foundation for a model-performance monitoring application. This phase deliberately contains no agents, RAG, MCP, API, database, or user interface.
+Python foundation for a model-performance monitoring application, now extended with a small **policy RAG module**. This phase still contains **no agent and no MCP implementation**.
 
 ## What is included
 
 - Pydantic schemas for model inventory and monthly monitoring records.
-- A small loader that converts Markdown table rows into validated objects.
-- An inventory of 20 models: 10 application scorecards, 5 behaviour scorecards, 3 collection models, and 2 fraud models.
-- Three months of synthetic monitoring data for all 20 models (60 observations).
-- pytest tests for schemas, data completeness, model coverage, and the supplied M001 values.
-- A provisional, documentation-only threshold policy for later implementation.
+- Synthetic monitoring data across application, behaviour, collections and fraud models.
+- A policy library with enterprise governance documents plus product-specific monitoring standards.
+- A small local RAG pipeline that:
+  - loads Markdown documents from `policies/`,
+  - preserves source metadata,
+  - chunks the documents,
+  - creates deterministic local vector embeddings,
+  - stores embeddings and chunks in a SQLite-backed local vector store,
+  - retrieves top-k passages,
+  - returns passage text, similarity score and source metadata.
+- A separate extractive answer layer so retrieval can be evaluated independently from answer construction.
+- pytest tests for document loading, metadata, retrieval, grounded answering and invalid queries.
 
 ## Setup and test
 
@@ -20,56 +27,121 @@ python -m pip install -r requirements.txt
 pytest
 ```
 
+## Run the RAG example
+
+```bash
+python -m model_monitoring.rag.demo
+```
+
+The demo asks:
+
+```text
+What action is required when PSI exceeds 0.25?
+```
+
+The expected policy conclusion is that a PSI at or above 0.25 is a **RED breach**. It requires escalation to the model owner and Model Risk Management, followed by investigation of the population segments driving the shift.
+
+The response object contains:
+
+```text
+question
+answer
+passages[]
+    text
+    source
+    path
+    chunk_index
+    score
+    metadata
+```
+
+## RAG data flow
+
+```text
+policies/*.md
+    ↓
+load_markdown_documents()
+    ↓
+PolicyDocument
+    ↓
+chunk_documents()
+    ↓
+PolicyChunk
+    ↓
+HashingEmbedder.embed()
+    ↓
+fixed-size local vectors
+    ↓
+LocalVectorStore (SQLite)
+    ↓
+PolicyRetriever.retrieve(question, top_k)
+    ↓
+RetrievedPassage[]
+    ↓
+build_grounded_answer(question, passages)
+    ↓
+answer + retrieved evidence + source metadata
+```
+
+## Why retrieval and answering are separate
+
+`PolicyRetriever.retrieve()` performs only retrieval. It does not generate an answer. This means retrieval can be tested independently for questions such as:
+
+- Was the correct policy retrieved?
+- Was the correct passage ranked first?
+- Was the source document preserved?
+- Did a product-specific document incorrectly outrank the enterprise policy?
+
+`build_grounded_answer()` receives already retrieved passages and constructs a small extractive answer. A future LLM generation layer can replace this function without changing the retrieval tests.
+
+## Local embedding choice
+
+This learning version uses a deterministic hashing embedder implemented in Python. It requires no API key, network request, model download or additional dependency, which keeps retrieval tests reproducible and makes the mechanics visible.
+
+It is intentionally simpler than a production semantic embedding model. Later, `HashingEmbedder` can be replaced by a SentenceTransformers/OpenAI/other embedding adapter while leaving the `PolicyRetriever` interface and evaluation dataset unchanged.
+
 ## Repository structure
 
 ```text
-model-monitoring-agent/
+model-monitoring-agent-project/
 ├── src/model_monitoring/
 │   ├── __init__.py
 │   ├── loaders.py
-│   └── models.py
+│   ├── models.py
+│   └── rag/
+│       ├── __init__.py
+│       ├── retrieval.py
+│       ├── answering.py
+│       └── demo.py
 ├── data/
-│   ├── model_inventory.md
-│   └── monitoring_table.md
 ├── policies/
-│   └── monitoring_thresholds.md
+│   ├── monitoring_thresholds.md
+│   ├── monitoring_policy.md
+│   ├── validation_policy.md
+│   ├── escalation_procedure.md
+│   ├── model_governance_policy.md
+│   ├── previous_validation_report.md
+│   ├── application_scorecard_monitoring.md
+│   ├── behaviour_scorecard_monitoring.md
+│   ├── collections_model_monitoring.md
+│   ├── fraud_model_monitoring.md
+│   └── credit_limit_model_monitoring.md
 ├── tests/
 │   ├── test_data_files.py
-│   └── test_models.py
-├── evals/README.md
-├── notebooks/README.md
-├── .env
+│   ├── test_models.py
+│   └── test_rag.py
+├── evals/
+├── notebooks/
 ├── .gitignore
 ├── pytest.ini
 ├── requirements.txt
 └── README.md
 ```
 
-## File-by-file explanation
-
-| File | Why it exists |
-|---|---|
-| `src/model_monitoring/__init__.py` | Defines the importable package and its small public interface. |
-| `src/model_monitoring/models.py` | Holds the Pydantic schemas, allowed risk tiers, identifier format, and metric bounds. |
-| `src/model_monitoring/loaders.py` | Reads Markdown tables and validates each row before the application uses it. |
-| `data/model_inventory.md` | Provides the initial governed list of 20 models and their ownership/materiality details. |
-| `data/monitoring_table.md` | Provides 60 synthetic monthly observations covering every inventory model. |
-| `policies/monitoring_thresholds.md` | Records provisional Green/Amber/Red thresholds separately from code for governance review. |
-| `tests/test_models.py` | Checks that valid records pass and impossible metric values fail validation. |
-| `tests/test_data_files.py` | Checks inventory uniqueness, full monitoring coverage, periods, row counts, and M001 sample values. |
-| `evals/README.md` | Preserves a clearly scoped location for future evaluation work without implementing it now. |
-| `notebooks/README.md` | Preserves a location for exploratory analysis and keeps production logic out of notebooks. |
-| `.env` | Supplies harmless local runtime defaults; future secrets should remain local and never be committed. |
-| `.gitignore` | Prevents Python build/test artefacts, virtual environments, coverage output, and `.env` from entering Git. |
-| `requirements.txt` | Declares the only initial runtime/development dependencies: Pydantic and pytest. |
-| `pytest.ini` | Tells pytest to import from `src/`, discover tests in `tests/`, and use concise output. |
-| `README.md` | Explains scope, setup, structure, and the purpose of every file. |
-
 ## Intentional limitations
 
-The metrics are synthetic examples, not production evidence. Thresholds are provisional documentation. Alert logic, baseline selection, time-series storage, APIs, dashboards, agents, RAG, and MCP should be added only in later, separately tested phases.
-
-
-# Evaluations
-
-Reserved for future evaluation datasets and evaluation code. No agent, RAG, or MCP evaluations are implemented in this initial phase.
+- The policy documents and monitoring data are synthetic learning examples, not approved production policy.
+- The local hashing embedder is deterministic and transparent but less semantically capable than a trained embedding model.
+- Similarity search currently reads the small local vector table and calculates cosine-equivalent dot-product ranking in Python; this is appropriate for a small learning corpus, not enterprise-scale retrieval.
+- The answer layer is extractive rather than an LLM generator.
+- No agent, LangGraph workflow, MCP server/client, autonomous action, or production database integration has been added yet.
