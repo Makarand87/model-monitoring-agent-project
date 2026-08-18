@@ -126,6 +126,25 @@ When PSI is 0.25 or higher, the PSI status is RED. The required action is escala
     assert response["passages"][0]["metadata"]["document_type"] == "escalation_procedure"
 
 
+def test_repository_policy_corpus_answers_requested_psi_question(tmp_path: Path) -> None:
+    retriever = PolicyRetriever(
+        policies_dir=Path("policies"),
+        db_path=tmp_path / "repository_policy_vectors.sqlite3",
+    )
+    retriever.build_index()
+
+    response = answer_policy_question(
+        "What action is required when PSI exceeds 0.25?",
+        retriever,
+        top_k=3,
+    )
+
+    sources = {passage["source"] for passage in response["passages"]}
+    assert sources & {"monitoring_policy.md", "escalation_procedure.md"}
+    assert "escalation" in response["answer"].lower()
+    assert "red" in response["answer"].lower()
+
+
 def test_empty_query_is_rejected(tmp_path: Path) -> None:
     policies = tmp_path / "policies"
     db_path = tmp_path / "vectors.sqlite3"
