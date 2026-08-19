@@ -1,30 +1,210 @@
-{"question":"What action is required when PSI exceeds 0.25?","expected_document":"escalation_procedure.md","expected_passage/topic":"RED PSI breach; escalate to model owner and MRM, investigate population segments driving the shift","risk_level":"HIGH","difficulty":"EASY"}
-{"question":"How is a PSI of 0.09 classified?","expected_document":"monitoring_policy.md","expected_passage/topic":"PSI below 0.10 is GREEN","risk_level":"LOW","difficulty":"EASY"}
-{"question":"How is a PSI of exactly 0.10 classified?","expected_document":"monitoring_policy.md","expected_passage/topic":"PSI from 0.10 up to but below 0.25 is AMBER","risk_level":"MEDIUM","difficulty":"MEDIUM"}
-{"question":"How is a PSI of 0.249 classified?","expected_document":"monitoring_policy.md","expected_passage/topic":"PSI below 0.25 but at least 0.10 is AMBER","risk_level":"MEDIUM","difficulty":"MEDIUM"}
-{"question":"How is a PSI of exactly 0.25 classified?","expected_document":"monitoring_policy.md","expected_passage/topic":"PSI at or above 0.25 is RED","risk_level":"HIGH","difficulty":"MEDIUM"}
-{"question":"How is an AUC deterioration of 0.02 from the approved baseline classified?","expected_document":"monitoring_policy.md","expected_passage/topic":"AUC decrease below 0.03 is GREEN","risk_level":"LOW","difficulty":"EASY"}
-{"question":"How is an AUC deterioration of 0.04 from the approved baseline classified?","expected_document":"monitoring_policy.md","expected_passage/topic":"AUC decrease from 0.03 to below 0.05 is AMBER","risk_level":"MEDIUM","difficulty":"EASY"}
-{"question":"How is an AUC deterioration of exactly 0.05 from the approved baseline classified?","expected_document":"monitoring_policy.md","expected_passage/topic":"AUC decrease at or above 0.05 is RED","risk_level":"HIGH","difficulty":"MEDIUM"}
-{"question":"What action is required when two monitoring metrics are AMBER in the same monitoring period?","expected_document":"escalation_procedure.md","expected_passage/topic":"Two or more AMBER metrics require mandatory investigation and documented commentary","risk_level":"MEDIUM","difficulty":"EASY"}
-{"question":"What action is required when any one monitoring metric is classified RED?","expected_document":"escalation_procedure.md","expected_passage/topic":"Any RED metric requires escalation; record evidence, notify owner and MRM, investigate drivers","risk_level":"HIGH","difficulty":"EASY"}
-{"question":"What events trigger targeted revalidation?","expected_document":"validation_policy.md","expected_passage/topic":"Targeted revalidation triggers include sustained RED deterioration, material model or data change, use change, repeated unresolved issues, or material control failure","risk_level":"HIGH","difficulty":"MEDIUM"}
-{"question":"When may a validation issue be closed?","expected_document":"validation_policy.md","expected_passage/topic":"Issue closure requires evidence that root cause is addressed or residual risk is formally accepted","risk_level":"HIGH","difficulty":"MEDIUM"}
-{"question":"Can a RED monitoring breach be closed only with management commentary?","expected_document":"model_governance_policy.md","expected_passage/topic":"RED breaches cannot be closed solely through management commentary; supporting analysis and approved disposition are required","risk_level":"HIGH","difficulty":"EASY"}
-{"question":"What decisions is an automated monitoring system prohibited from approving independently?","expected_document":"model_governance_policy.md","expected_passage/topic":"Automation may calculate, retrieve, classify and recommend, but may not independently approve material model changes or risk acceptance","risk_level":"CRITICAL","difficulty":"MEDIUM"}
-{"question":"Which segments must supplement overall PSI review for the application scorecard?","expected_document":"application_scorecard_monitoring.md","expected_passage/topic":"Segment PSI for acquisition channel, geography, New-to-Credit status, and major policy segments","risk_level":"MEDIUM","difficulty":"EASY"}
-{"question":"Does a RED overall PSI for the application scorecard automatically prove model deterioration?","expected_document":"application_scorecard_monitoring.md","expected_passage/topic":"No; identify contributing segments and distinguish population or strategy shifts from model deterioration","risk_level":"HIGH","difficulty":"MEDIUM"}
-{"question":"What prior validation concern was identified for APP_PD_001?","expected_document":"previous_validation_report.md","expected_passage/topic":"Population mix shifting toward New-to-Credit applicants and limited historical depth for recent acquisition channels","risk_level":"MEDIUM","difficulty":"EASY"}
-{"question":"When did the previous validation report say targeted revalidation should be considered for persistent AUC deterioration?","expected_document":"previous_validation_report.md","expected_passage/topic":"Consider targeted revalidation if RED AUC deterioration persists for two consecutive monitoring periods","risk_level":"HIGH","difficulty":"MEDIUM"}
-{"question":"Which drivers should be investigated when a behaviour scorecard shows a material PSI shift?","expected_document":"behaviour_scorecard_monitoring.md","expected_passage/topic":"Investigate utilization, payment patterns, account tenure, hardship programmes, and portfolio strategy","risk_level":"MEDIUM","difficulty":"EASY"}
-{"question":"For a behaviour scorecard, what should happen if two metrics are AMBER and none is RED?","expected_document":"behaviour_scorecard_monitoring.md","expected_passage/topic":"Two or more AMBER metrics require documented investigation even without a RED metric","risk_level":"MEDIUM","difficulty":"MEDIUM"}
-{"question":"What performance measures should be reviewed for a collections model?","expected_document":"collections_model_monitoring.md","expected_passage/topic":"PSI, rank ordering, cure rate, roll rate, contactability, treatment mix, promise-to-pay outcomes, and delinquency-bucket performance","risk_level":"MEDIUM","difficulty":"EASY"}
-{"question":"May an automated collections monitoring recommendation directly change customer treatment strategy?","expected_document":"collections_model_monitoring.md","expected_passage/topic":"No; changes to customer treatment strategies require authorized human approval","risk_level":"CRITICAL","difficulty":"MEDIUM"}
-{"question":"What special condition requires investigation for a fraud model even when aggregate fraud capture remains stable?","expected_document":"fraud_model_monitoring.md","expected_passage/topic":"A material increase in false positives affecting legitimate customers must be investigated","risk_level":"HIGH","difficulty":"MEDIUM"}
-{"question":"Which metrics are specifically required for fraud-model monitoring?","expected_document":"fraud_model_monitoring.md","expected_passage/topic":"Score distribution, PSI, precision, recall, false-positive rate, fraud capture, alert volume, investigation conversion, and channel or fraud-typology performance","risk_level":"MEDIUM","difficulty":"EASY"}
-{"question":"Can the monitoring system autonomously alter a production credit-limit strategy?","expected_document":"credit_limit_model_monitoring.md","expected_passage/topic":"No; customer exposure changes require approved decision rules and human governance","risk_level":"CRITICAL","difficulty":"EASY"}
-{"question":"Enterprise policy says RED PSI requires escalation, while the application standard says RED PSI does not automatically mean model deterioration. What evidence should be retrieved to support both statements?","expected_document":"application_scorecard_monitoring.md","expected_passage/topic":"Apply enterprise escalation for RED metrics, but perform segment analysis before concluding model deterioration","risk_level":"HIGH","difficulty":"HARD"}
-{"question":"A previous validation report refers to two consecutive RED AUC periods. Which enterprise document defines the broader set of targeted revalidation triggers?","expected_document":"validation_policy.md","expected_passage/topic":"Enterprise targeted revalidation triggers extend beyond persistent AUC deterioration to model, data, use, issue, and control changes","risk_level":"HIGH","difficulty":"HARD"}
-{"question":"Within how many business days must a RED PSI breach be escalated?","expected_document":null,"expected_passage/topic":"UNANSWERABLE: the current policy corpus requires escalation but does not specify a business-day deadline","risk_level":"HIGH","difficulty":"HARD"}
-{"question":"What numerical fairness-disparity threshold causes a model monitoring breach?","expected_document":null,"expected_passage/topic":"UNANSWERABLE: the current policy corpus does not define a numerical fairness-disparity threshold","risk_level":"HIGH","difficulty":"HARD"}
-{"question":"How many governance committee members must approve suspension of a model?","expected_document":null,"expected_passage/topic":"UNANSWERABLE: the current policy corpus requires authorized governance approval but does not define a committee quorum","risk_level":"CRITICAL","difficulty":"HARD"}
+{
+    "question": "What action is required when PSI exceeds 0.25?",
+    "expected_document": "escalation_procedure.md",
+    "expected_passage/topic": "RED PSI breach; escalate to model owner and MRM, investigate population segments driving the shift",
+    "risk_level": "HIGH",
+    "difficulty": "EASY"
+}
+{
+    "question": "How is a PSI of 0.09 classified?",
+    "expected_document": "monitoring_policy.md",
+    "expected_passage/topic": "PSI below 0.10 is GREEN",
+    "risk_level": "LOW",
+    "difficulty": "EASY"
+}
+{
+    "question": "How is a PSI of exactly 0.10 classified?",
+    "expected_document": "monitoring_policy.md",
+    "expected_passage/topic": "PSI from 0.10 up to but below 0.25 is AMBER",
+    "risk_level": "MEDIUM",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "How is a PSI of 0.249 classified?",
+    "expected_document": "monitoring_policy.md",
+    "expected_passage/topic": "PSI below 0.25 but at least 0.10 is AMBER",
+    "risk_level": "MEDIUM",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "How is a PSI of exactly 0.25 classified?",
+    "expected_document": "monitoring_policy.md",
+    "expected_passage/topic": "PSI at or above 0.25 is RED",
+    "risk_level": "HIGH",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "How is an AUC deterioration of 0.02 from the approved baseline classified?",
+    "expected_document": "monitoring_policy.md",
+    "expected_passage/topic": "AUC decrease below 0.03 is GREEN",
+    "risk_level": "LOW",
+    "difficulty": "EASY"
+}
+{
+    "question": "How is an AUC deterioration of 0.04 from the approved baseline classified?",
+    "expected_document": "monitoring_policy.md",
+    "expected_passage/topic": "AUC decrease from 0.03 to below 0.05 is AMBER",
+    "risk_level": "MEDIUM",
+    "difficulty": "EASY"
+}
+{
+    "question": "How is an AUC deterioration of exactly 0.05 from the approved baseline classified?",
+    "expected_document": "monitoring_policy.md",
+    "expected_passage/topic": "AUC decrease at or above 0.05 is RED",
+    "risk_level": "HIGH",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "What action is required when two monitoring metrics are AMBER in the same monitoring period?",
+    "expected_document": "escalation_procedure.md",
+    "expected_passage/topic": "Two or more AMBER metrics require mandatory investigation and documented commentary",
+    "risk_level": "MEDIUM",
+    "difficulty": "EASY"
+}
+{
+    "question": "What action is required when any one monitoring metric is classified RED?",
+    "expected_document": "escalation_procedure.md",
+    "expected_passage/topic": "Any RED metric requires escalation; record evidence, notify owner and MRM, investigate drivers",
+    "risk_level": "HIGH",
+    "difficulty": "EASY"
+}
+{
+    "question": "What events trigger targeted revalidation?",
+    "expected_document": "validation_policy.md",
+    "expected_passage/topic": "Targeted revalidation triggers include sustained RED deterioration, material model or data change, use change, repeated unresolved issues, or material control failure",
+    "risk_level": "HIGH",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "When may a validation issue be closed?",
+    "expected_document": "validation_policy.md",
+    "expected_passage/topic": "Issue closure requires evidence that root cause is addressed or residual risk is formally accepted",
+    "risk_level": "HIGH",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "Can a RED monitoring breach be closed only with management commentary?",
+    "expected_document": "model_governance_policy.md",
+    "expected_passage/topic": "RED breaches cannot be closed solely through management commentary; supporting analysis and approved disposition are required",
+    "risk_level": "HIGH",
+    "difficulty": "EASY"
+}
+{
+    "question": "What decisions is an automated monitoring system prohibited from approving independently?",
+    "expected_document": "model_governance_policy.md",
+    "expected_passage/topic": "Automation may calculate, retrieve, classify and recommend, but may not independently approve material model changes or risk acceptance",
+    "risk_level": "CRITICAL",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "Which segments must supplement overall PSI review for the application scorecard?",
+    "expected_document": "application_scorecard_monitoring.md",
+    "expected_passage/topic": "Segment PSI for acquisition channel, geography, New-to-Credit status, and major policy segments",
+    "risk_level": "MEDIUM",
+    "difficulty": "EASY"
+}
+{
+    "question": "Does a RED overall PSI for the application scorecard automatically prove model deterioration?",
+    "expected_document": "application_scorecard_monitoring.md",
+    "expected_passage/topic": "No; identify contributing segments and distinguish population or strategy shifts from model deterioration",
+    "risk_level": "HIGH",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "What prior validation concern was identified for APP_PD_001?",
+    "expected_document": "previous_validation_report.md",
+    "expected_passage/topic": "Population mix shifting toward New-to-Credit applicants and limited historical depth for recent acquisition channels",
+    "risk_level": "MEDIUM",
+    "difficulty": "EASY"
+}
+{
+    "question": "When did the previous validation report say targeted revalidation should be considered for persistent AUC deterioration?",
+    "expected_document": "previous_validation_report.md",
+    "expected_passage/topic": "Consider targeted revalidation if RED AUC deterioration persists for two consecutive monitoring periods",
+    "risk_level": "HIGH",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "Which drivers should be investigated when a behaviour scorecard shows a material PSI shift?",
+    "expected_document": "behaviour_scorecard_monitoring.md",
+    "expected_passage/topic": "Investigate utilization, payment patterns, account tenure, hardship programmes, and portfolio strategy",
+    "risk_level": "MEDIUM",
+    "difficulty": "EASY"
+}
+{
+    "question": "For a behaviour scorecard, what should happen if two metrics are AMBER and none is RED?",
+    "expected_document": "behaviour_scorecard_monitoring.md",
+    "expected_passage/topic": "Two or more AMBER metrics require documented investigation even without a RED metric",
+    "risk_level": "MEDIUM",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "What performance measures should be reviewed for a collections model?",
+    "expected_document": "collections_model_monitoring.md",
+    "expected_passage/topic": "PSI, rank ordering, cure rate, roll rate, contactability, treatment mix, promise-to-pay outcomes, and delinquency-bucket performance",
+    "risk_level": "MEDIUM",
+    "difficulty": "EASY"
+}
+{
+    "question": "May an automated collections monitoring recommendation directly change customer treatment strategy?",
+    "expected_document": "collections_model_monitoring.md",
+    "expected_passage/topic": "No; changes to customer treatment strategies require authorized human approval",
+    "risk_level": "CRITICAL",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "What special condition requires investigation for a fraud model even when aggregate fraud capture remains stable?",
+    "expected_document": "fraud_model_monitoring.md",
+    "expected_passage/topic": "A material increase in false positives affecting legitimate customers must be investigated",
+    "risk_level": "HIGH",
+    "difficulty": "MEDIUM"
+}
+{
+    "question": "Which metrics are specifically required for fraud-model monitoring?",
+    "expected_document": "fraud_model_monitoring.md",
+    "expected_passage/topic": "Score distribution, PSI, precision, recall, false-positive rate, fraud capture, alert volume, investigation conversion, and channel or fraud-typology performance",
+    "risk_level": "MEDIUM",
+    "difficulty": "EASY"
+}
+{
+    "question": "Can the monitoring system autonomously alter a production credit-limit strategy?",
+    "expected_document": "credit_limit_model_monitoring.md",
+    "expected_passage/topic": "No; customer exposure changes require approved decision rules and human governance",
+    "risk_level": "CRITICAL",
+    "difficulty": "EASY"
+}
+{
+    "question": "Enterprise policy says RED PSI requires escalation, while the application standard says RED PSI does not automatically mean model deterioration. What evidence should be retrieved to support both statements?",
+    "expected_document": "application_scorecard_monitoring.md",
+    "expected_passage/topic": "Apply enterprise escalation for RED metrics, but perform segment analysis before concluding model deterioration",
+    "risk_level": "HIGH",
+    "difficulty": "HARD"
+}
+{
+    "question": "A previous validation report refers to two consecutive RED AUC periods. Which enterprise document defines the broader set of targeted revalidation triggers?",
+    "expected_document": "validation_policy.md",
+    "expected_passage/topic": "Enterprise targeted revalidation triggers extend beyond persistent AUC deterioration to model, data, use, issue, and control changes",
+    "risk_level": "HIGH",
+    "difficulty": "HARD"
+}
+{
+    "question": "Within how many business days must a RED PSI breach be escalated?",
+    "expected_document": null,
+    "expected_passage/topic": "UNANSWERABLE: the current policy corpus requires escalation but does not specify a business-day deadline",
+    "risk_level": "HIGH",
+    "difficulty": "HARD"
+}
+{
+    "question": "What numerical fairness-disparity threshold causes a model monitoring breach?",
+    "expected_document": null,
+    "expected_passage/topic": "UNANSWERABLE: the current policy corpus does not define a numerical fairness-disparity threshold",
+    "risk_level": "HIGH",
+    "difficulty": "HARD"
+}
+{
+    "question": "How many governance committee members must approve suspension of a model?",
+    "expected_document": null,
+    "expected_passage/topic": "UNANSWERABLE: the current policy corpus requires authorized governance approval but does not define a committee quorum",
+    "risk_level": "CRITICAL",
+    "difficulty": "HARD"
+}

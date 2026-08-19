@@ -17,14 +17,15 @@ def test_load_markdown_documents_preserves_source_metadata(tmp_path: Path) -> No
         policies,
         "monitoring_policy.md",
         """---
-document_type: monitoring_policy
-product: application_scorecard
----
-
-# Monitoring Policy
-
-PSI at or above 0.25 is RED and requires escalation.
-""",
+        document_type: monitoring_policy
+        product: application_scorecard
+        ---
+        
+        
+        # Monitoring Policy
+        
+        PSI at or above 0.25 is RED and requires escalation.
+        """,
     )
 
     documents = load_markdown_documents(policies)
@@ -44,8 +45,9 @@ def test_retrieval_returns_relevant_psi_passage_and_source(tmp_path: Path) -> No
         policies,
         "monitoring_policy.md",
         """# Monitoring Policy
-
-When PSI is 0.25 or higher, status is RED. A RED PSI breach requires escalation to the model owner and Model Risk Management, followed by investigation of the population shift.
+        
+        
+        When PSI is 0.25 or higher, status is RED. A RED PSI breach requires escalation to the model owner and Model Risk Management, followed by investigation of the population shift.
 """,
     )
     _write_policy(

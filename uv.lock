@@ -36,12 +36,14 @@ source = { editable = "." }
 dependencies = [
     { name = "pydantic" },
     { name = "pytest" },
+    { name = "typing-inspection" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "pytest", specifier = ">=9.1.1" },
+    { name = "typing-inspection", specifier = "==0.4.4" },
 ]
 
 [[package]]
