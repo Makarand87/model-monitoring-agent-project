@@ -1,7 +1,6 @@
 """Pydantic schemas used by the model-monitoring application."""
 
 from enum import Enum
-
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 

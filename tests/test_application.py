@@ -61,9 +61,11 @@ def test_relative_change_rejects_zero_historical_value() -> None:
     ("psi", "expected"),
     [
         (0.08, MonitoringStatus.GREEN),
-        (0.10, MonitoringStatus.GREEN),
+        (0.09999, MonitoringStatus.GREEN),
+        (0.10, MonitoringStatus.AMBER),
         (0.100001, MonitoringStatus.AMBER),
-        (0.25, MonitoringStatus.AMBER),
+        (0.24999, MonitoringStatus.AMBER),
+        (0.25, MonitoringStatus.RED),
         (0.250001, MonitoringStatus.RED),
     ],
 )
@@ -95,9 +97,11 @@ def test_classify_psi_rejects_invalid_values(invalid: float) -> None:
     ("auc_change", "expected"),
     [
         (0.02, MonitoringStatus.GREEN),
-        (0.03, MonitoringStatus.GREEN),
+        (0.029999, MonitoringStatus.GREEN),
+        (0.03, MonitoringStatus.AMBER),
         (0.030001, MonitoringStatus.AMBER),
-        (0.05, MonitoringStatus.AMBER),
+        (0.049999, MonitoringStatus.AMBER),
+        (0.05, MonitoringStatus.RED),
         (0.050001, MonitoringStatus.RED),
     ],
 )

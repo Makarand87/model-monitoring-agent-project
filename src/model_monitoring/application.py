@@ -24,6 +24,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_INVENTORY_PATH = PROJECT_ROOT / "data" / "model_inventory.md"
 DEFAULT_MONITORING_PATH = PROJECT_ROOT / "data" / "monitoring_table.md"
 
+
 PSI_THRESHOLD = Threshold(metric=MetricName.PSI, green_max=0.10, amber_max=0.25)
 AUC_CHANGE_THRESHOLD = Threshold(
     metric=MetricName.AUC_CHANGE,
@@ -119,13 +120,12 @@ def calculate_metric_change(
         raise ValueError("historical_value cannot be zero for relative change")
     return round(difference / historical, 12)
 
-
 def _classify(value: float, threshold: Threshold) -> Breach:
     number = _validate_number(value, threshold.metric.value, non_negative=True)
-    if number <= threshold.green_max:
+    if number < threshold.green_max:
         status = MonitoringStatus.GREEN
         breached_threshold = threshold.green_max
-    elif number <= threshold.amber_max:
+    elif number < threshold.amber_max:
         status = MonitoringStatus.AMBER
         breached_threshold = threshold.green_max
     else:

@@ -2,7 +2,6 @@
 
 from pathlib import Path
 from typing import TypeVar
-
 from pydantic import BaseModel
 
 from model_monitoring.models import ModelInventoryRecord, MonitoringRecord
