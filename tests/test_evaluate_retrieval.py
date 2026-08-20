@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-
 from evals.evaluate_retrieval import aggregate, evaluate_case, load_cases
 from model_monitoring.rag.retrieval import RetrievedPassage
 

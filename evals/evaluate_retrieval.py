@@ -30,7 +30,20 @@ DEFAULT_TOP_K = 3
 
 def load_cases(path: Path) -> list[dict[str, Any]]:
     """Load and minimally validate the JSONL evaluation cases."""
-    cases = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    # cases = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    text = path.read_text(encoding="utf-8")
+    decoder = json.JSONDecoder()
+    cases: list[dict[str, Any]] = []
+    position = 0
+    while position < len(text):
+        while position < len(text) and text[position].isspace():
+            position += 1
+        if position == len(text):
+            break
+        case, position = decoder.raw_decode(text, position)
+        if not isinstance(case, dict):
+            raise ValueError(f"Evaluation case {len(cases) + 1} must be a JSON object")
+        cases.append(case)
     if len(cases) != REQUIRED_CASES:
         raise ValueError(f"Expected {REQUIRED_CASES} cases, found {len(cases)} in {path}")
     required = {"question", "expected_document", "risk_level", "difficulty"}
