@@ -43,3 +43,30 @@ expected document retrieved in that context; and NDCG uses binary chunk
 relevance. The three deliberately unanswerable cases remain visible in the
 per-case results but are excluded from these ranking metrics because the current
 retriever always returns passages and has no abstention signal.
+
+
+## Run the generation evaluation
+
+The same golden questions and expected topics can also evaluate the answer layer:
+
+```bash
+python evals/evaluate_generation.py --output .rag/generation_report.json
+```
+
+The report includes four deterministic, zero-dependency regression metrics for
+answerable cases:
+
+- **Faithfulness**: precision of answer content tokens supported by retrieved context.
+- **Answer relevance**: recall of question content tokens in the answer.
+- **Answer completeness**: recall of expected-topic content tokens in the answer.
+- **Answer correctness**: F1 overlap between answer and expected-topic content tokens.
+
+It also reports **abstention accuracy** across all cases. For answerable cases,
+producing an answer is correct; for unanswerable cases, the answer must equal the
+pipeline's standard no-evidence response. Results are aggregated overall and by
+risk level and difficulty.
+
+These lexical metrics are transparent and reproducible, making them suitable
+for CI regression tracking. They do not understand synonyms, contradictions, or
+policy meaning, so releases—especially changes affecting HIGH or CRITICAL risk
+questions—still require human review or a separately validated semantic judge.
