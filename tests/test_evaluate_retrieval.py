@@ -2,6 +2,8 @@ from pathlib import Path
 
 import pytest
 from evals.evaluate_retrieval import aggregate, evaluate_case, load_cases
+from model_monitoring.rag.backends import build_retriever
+from model_monitoring.rag.retrieval import HashingEmbedder
 from model_monitoring.rag.retrieval import RetrievedPassage
 
 
@@ -47,3 +49,14 @@ def test_unanswerable_case_is_excluded_from_aggregate() -> None:
     assert result["scored"] is False
     assert aggregate([result])["case_count"] == 0
     assert aggregate([result])["mrr"] is None
+
+
+def test_hash_backend_builds_offline_retriever(tmp_path: Path) -> None:
+    retriever = build_retriever("hash", tmp_path, tmp_path / "vectors.db", "unused")
+
+    assert isinstance(retriever.embedder, HashingEmbedder)
+
+
+def test_unknown_backend_is_rejected(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="Unsupported backend"):
+        build_retriever("other", tmp_path, tmp_path / "vectors.db", "unused")
