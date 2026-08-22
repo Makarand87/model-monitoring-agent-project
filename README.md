@@ -1,6 +1,6 @@
 # model-monitoring-agent-project
 
-Python foundation for a model-performance monitoring application, now extended with a small **policy RAG module**. This phase still contains **no agent and no MCP implementation**.
+Python foundation for a model-performance monitoring application, extended with a small **policy RAG module** and a **read-only monitoring agent**. This phase contains no MCP implementation.
 
 ## What is included
 
@@ -16,13 +16,14 @@ Python foundation for a model-performance monitoring application, now extended w
   - retrieves top-k passages,
   - returns passage text, similarity score and source metadata.
 - A separate extractive answer layer so retrieval can be evaluated independently from answer construction.
+- A read-only agent that runs deterministic monitoring tools, retrieves policy evidence and returns cited recommendations with a structured audit log of every tool call.
 - pytest tests for document loading, metadata, retrieval, grounded answering and invalid queries.
 
 ## Setup and test
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # Windows PowerShell: .venv\Scripts\Activate.ps1
+PowerShell: .venv\Scripts\Activate.ps1 #source .venv/bin/activate  # Windows 
 python -m pip install -r requirements.txt
 pytest
 ```
@@ -54,6 +55,39 @@ passages[]
     score
     metadata
 ```
+
+## Run the monitoring agent
+
+Build the policy index as a separate setup operation, then pass the retriever to
+the agent. The agent itself only calls `retrieve()` and never builds or mutates
+the index.
+
+```python
+from model_monitoring.agent import MonitoringAgent
+from model_monitoring.rag.retrieval import PolicyRetriever
+
+retriever = PolicyRetriever()
+retriever.build_index()  # Setup operation outside the agent.
+
+result = MonitoringAgent(retriever).run("M001", "2026-07")
+print(result.recommendation.model_dump(mode="json"))
+print([entry.model_dump(mode="json") for entry in result.tool_call_log])
+```
+
+The runtime flow is fixed:
+
+```text
+get_model_metrics()
+    -> get_historical_metrics()
+    -> detect_breaches()
+    -> search_policy()
+    -> recommendation
+```
+
+The recommendation builder receives only deterministic `Breach` objects and
+retrieved policy passages. It cannot recalculate PSI or AUC from raw monitoring
+metrics. Recommendations are text output only and every recommended action
+contains policy citation identifiers such as `monitoring_policy.md#chunk-2`.
 
 ## RAG data flow
 
@@ -144,4 +178,4 @@ model-monitoring-agent-project/
 - The local hashing embedder is deterministic and transparent but less semantically capable than a trained embedding model.
 - Similarity search currently reads the small local vector table and calculates cosine-equivalent dot-product ranking in Python; this is appropriate for a small learning corpus, not enterprise-scale retrieval.
 - The answer layer is extractive rather than an LLM generator.
-- No agent, LangGraph workflow, MCP server/client, autonomous action, or production database integration has been added yet.
+- No LangGraph workflow, MCP server/client, autonomous action, or production database integration has been added yet.
