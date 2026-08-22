@@ -7,7 +7,7 @@ import re
 import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Protocol
 
 
 @dataclass(frozen=True)
@@ -66,6 +66,26 @@ class HashingEmbedder:
         return [value / norm for value in vector]
 
 
+class Embedder(Protocol):
+    """Minimal interface accepted by the local vector store."""
+
+    def embed(self, text: str) -> list[float]: ...
+
+
+class OpenAIEmbedder:
+    """Semantic embeddings supplied by the OpenAI embeddings API."""
+
+    def __init__(self, model: str = "text-embedding-3-small") -> None:
+        from openai import OpenAI
+
+        self.model = model
+        self.client = OpenAI()
+
+    def embed(self, text: str) -> list[float]:
+        response = self.client.embeddings.create(model=self.model, input=text)
+        return response.data[0].embedding
+
+
 class LocalVectorStore:
     """A tiny SQLite-backed local vector store for policy chunks."""
 
@@ -93,7 +113,7 @@ class LocalVectorStore:
                 """
             )
 
-    def replace(self, chunks: Iterable[PolicyChunk], embedder: HashingEmbedder) -> None:
+    def replace(self, chunks: Iterable[PolicyChunk], embedder: Embedder) -> None:
         rows = []
         for chunk in chunks:
             rows.append(
@@ -165,7 +185,7 @@ class PolicyRetriever:
         db_path: str | Path = ".rag/policy_vectors.sqlite3",
         chunk_size: int = 700,
         chunk_overlap: int = 100,
-        embedder: HashingEmbedder | None = None,
+        embedder: Embedder | None = None,
     ) -> None:
         self.policies_dir = Path(policies_dir)
         self.chunk_size = chunk_size

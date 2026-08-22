@@ -18,7 +18,9 @@ Each record has:
 
 Coverage includes PSI and AUC thresholds, two-AMBER logic, escalation, revalidation, governance restrictions, application scorecards, behaviour scorecards, collections, fraud, credit-limit models, cross-document questions, overlapping guidance, and deliberately unanswerable questions.
 
-This dataset is intentionally retrieval-focused. It does not score generated answers or agent behaviour.
+The same dataset is consumed by both retrieval and generation evaluations. Its
+`expected_passage/topic` field acts as the reference answer for generation
+metrics, including the three explicit `UNANSWERABLE` cases.
 
 
 ## Run the retrieval evaluation
@@ -26,7 +28,8 @@ This dataset is intentionally retrieval-focused. It does not score generated ans
 From the repository root (with the project installed), run:
 
 ```bash
-python evals/evaluate_retrieval.py --output .rag/retrieval_report.json
+python evals/evaluate_retrieval.py --backend hash --output .rag/retrieval_hash.json
+OPENAI_API_KEY=... python evals/evaluate_retrieval.py --backend openai --output .rag/retrieval_openai.json
 ```
 
 The runner indexes the policy corpus once, evaluates every one of the 30 cases,
@@ -73,3 +76,30 @@ These lexical metrics are transparent and reproducible, making them suitable
 for CI regression tracking. They do not understand synonyms, contradictions, or
 policy meaning, so releases—especially changes affecting HIGH or CRITICAL risk
 questions—still require human review or a separately validated semantic judge.
+`--backend hash` uses the dependency-free deterministic embedder. `--backend
+openai` uses `text-embedding-3-small` by default; override it with
+`--embedding-model`. Use a different `--db-path` for concurrent runs because an
+evaluation rebuilds the SQLite index.
+
+## Run the generation evaluation
+
+Generation uses the exact same 30 records and retrieved contexts:
+
+```bash
+OPENAI_API_KEY=... python evals/evaluate_generation.py --backend hash --output .rag/generation_hash.json
+OPENAI_API_KEY=... python evals/evaluate_generation.py --backend openai --output .rag/generation_openai.json
+```
+
+Hash mode evaluates the existing deterministic extractive answer builder.
+OpenAI mode uses semantic retrieval and generates a context-constrained answer
+with `gpt-5-mini` by default. In both modes, RAGAS reports faithfulness, answer
+relevancy, context precision, and context recall. A separate LLM-as-a-judge call
+assigns each answer a correctness score from 1 to 5 and explains it. Thus hash
+mode remains useful as a local system-under-test baseline, but generation
+evaluation still needs `OPENAI_API_KEY` for RAGAS and the judge.
+
+Models are configurable with `--embedding-model`, `--generation-model`, and
+`--judge-model`. The output contains every answer, source, context, per-case
+RAGAS result and judge rationale, followed by aggregate means. API-backed runs
+make multiple paid requests; model access, pricing, and rate limits depend on
+the configured OpenAI account.

@@ -19,10 +19,10 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from model_monitoring.rag.retrieval import (
-    PolicyRetriever,
     chunk_documents,
     load_markdown_documents,
 )
+from model_monitoring.rag.backends import BACKENDS, build_retriever
 
 REQUIRED_CASES = 30
 DEFAULT_TOP_K = 3
@@ -135,12 +135,14 @@ def run_evaluation(
     policies_dir: Path,
     db_path: Path,
     top_k: int = DEFAULT_TOP_K,
+    backend: str = "hash",
+    embedding_model: str = "text-embedding-3-small",
 ) -> dict[str, Any]:
     if top_k < 3:
         raise ValueError("top_k must be at least 3 to calculate Hit@3")
 
     cases = load_cases(dataset)
-    retriever = PolicyRetriever(policies_dir=policies_dir, db_path=db_path)
+    retriever = build_retriever(backend, policies_dir, db_path, embedding_model)
     indexed_chunks = retriever.build_index()
     chunks = chunk_documents(
         load_markdown_documents(policies_dir),
@@ -163,6 +165,8 @@ def run_evaluation(
     return {
         "configuration": {
             "dataset": str(dataset),
+            "backend": backend,
+            "embedding_model": embedding_model if backend == "openai" else None,
             "policies_dir": str(policies_dir),
             "top_k": top_k,
             "indexed_chunks": indexed_chunks,
@@ -185,10 +189,19 @@ def main() -> None:
     parser.add_argument("--policies-dir", type=Path, default=Path("policies"))
     parser.add_argument("--db-path", type=Path, default=Path(".rag/evaluation_vectors.sqlite3"))
     parser.add_argument("--top-k", type=int, default=DEFAULT_TOP_K)
+    parser.add_argument("--backend", choices=BACKENDS, default="hash")
+    parser.add_argument("--embedding-model", default="text-embedding-3-small")
     parser.add_argument("--output", type=Path, help="Also write the JSON report to this path")
     args = parser.parse_args()
 
-    report = run_evaluation(args.dataset, args.policies_dir, args.db_path, args.top_k)
+    report = run_evaluation(
+        args.dataset,
+        args.policies_dir,
+        args.db_path,
+        args.top_k,
+        args.backend,
+        args.embedding_model,
+    )
     rendered = json.dumps(report, indent=2)
     # print(rendered)
     if args.output:

@@ -1,159 +1,133 @@
-"""Evaluate answers produced by the policy RAG pipeline.
+"""Evaluate answers on the same 30-case golden set with RAGAS and an LLM judge.
 
-The evaluator is deterministic and dependency-free. Its lexical metrics are
+Hash mode creates deterministic extractive answers; OpenAI mode uses the chosen chat model. 
+Both modes require ``OPENAI_API_KEY`` for model-based evaluation.
+
+The Hash mode evaluator is deterministic and dependency-free. Its lexical metrics are
 regression signals, not a substitute for human or calibrated semantic review.
+
 """
+
 from __future__ import annotations
 
 import argparse
 import json
-import re
-from collections import defaultdict
+
 from pathlib import Path
-from typing import Any, Iterable
+from statistics import mean
+from typing import Any
 
-from model_monitoring.rag.answering import answer_policy_question
-from model_monitoring.rag.retrieval import PolicyRetriever
-
-DEFAULT_TOP_K = 3
-ABSTENTION = "No relevant policy evidence was retrieved."
-_STOP_WORDS = {
-    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how",
-    "in", "is", "it", "of", "on", "or", "that", "the", "this", "to", "what",
-    "when", "which", "with",
-}
+from evals.evaluate_retrieval import DEFAULT_TOP_K, load_cases
+from model_monitoring.rag.answering import build_grounded_answer
+from model_monitoring.rag.backends import BACKENDS, build_retriever
 
 
-def load_cases(path: Path) -> list[dict[str, Any]]:
-    """Load generation cases and validate the required reference fields."""
-    # cases = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
-    text = path.read_text(encoding="utf-8")
-    decoder = json.JSONDecoder()
-    cases: list[dict[str, Any]] = []
-    position = 0
-    while position < len(text):
-        while position < len(text) and text[position].isspace():
-            position += 1
-        if position == len(text):
-            break
-        case, position = decoder.raw_decode(text, position)
-        if not isinstance(case, dict):
-            raise ValueError(f"Evaluation case {len(cases) + 1} must be a JSON object")
-        cases.append(case)
- 
-    required = {"question", "expected_document", "expected_passage/topic", "risk_level", "difficulty"}
-    for number, case in enumerate(cases, start=1):
-        missing = required - case.keys()
-        if missing:
-            raise ValueError(f"Case {number} is missing fields: {sorted(missing)}")
-    if not cases:
-        raise ValueError(f"No evaluation cases found in {path}")
-    return cases
+def generate_openai_answer(question: str, contexts: list[str], model: str) -> str:
+    """Generate an answer constrained to the retrieved policy context."""
+    from openai import OpenAI
+
+    response = OpenAI().responses.create(
+        model=model,
+        instructions=(
+            "Answer only from the supplied policy context. If it does not contain "
+            "the answer, say that the policy corpus does not specify it. Be concise."
+        ),
+        input=f"Question: {question}\n\nPolicy context:\n" + "\n\n---\n\n".join(contexts),
+    )
+    return response.output_text
 
 
+def judge_answer(question: str, reference: str, answer: str, model: str) -> dict[str, Any]:
+    """Return a structured 1-5 correctness score from an independent LLM call."""
+    from openai import OpenAI
+
+    response = OpenAI().responses.create(
+        model=model,
+        instructions=(
+            "Act as a strict answer-correctness judge. Compare the candidate with the "
+            "reference. Return JSON with integer score (1 wholly incorrect to 5 fully "
+            "correct) and a brief reason. For an UNANSWERABLE reference, full credit "
+            "requires the candidate to abstain rather than invent a value."
+        ),
+        input=f"Question: {question}\nReference: {reference}\nCandidate: {answer}",
+        text={"format": {"type": "json_object"}},
+    )
+    result = json.loads(response.output_text)
+    score = result.get("score")
+    if not isinstance(score, int) or not 1 <= score <= 5:
+        raise ValueError(f"Judge returned invalid score: {score!r}")
+    return {"score": score, "reason": str(result.get("reason", ""))}
 
 
-def _tokens(text: str) -> set[str]:
-    """Return normalized content tokens while retaining numbers and negation."""
-    return {
-        token for token in re.findall(r"[a-z0-9]+(?:\.[0-9]+)?", text.lower())
-        if token not in _STOP_WORDS
-    }
+def run_ragas(rows: list[dict[str, Any]], judge_model: str, embedding_model: str) -> list[dict[str, Any]]:
+    """Run RAGAS faithfulness, relevancy, and context metrics for all rows."""
+    from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+    from ragas import EvaluationDataset, evaluate
+    from ragas.embeddings import LangchainEmbeddingsWrapper
+    from ragas.llms import LangchainLLMWrapper
+    from ragas.metrics import AnswerRelevancy, Faithfulness, LLMContextPrecisionWithReference, LLMContextRecall
+
+    dataset = EvaluationDataset.from_list(
+        [{"user_input": row["question"], "response": row["answer"],
+          "retrieved_contexts": row["contexts"], "reference": row["reference"]} for row in rows]
+    )
+    llm = LangchainLLMWrapper(ChatOpenAI(model=judge_model, temperature=0))
+    embeddings = LangchainEmbeddingsWrapper(OpenAIEmbeddings(model=embedding_model))
+    result = evaluate(dataset=dataset, metrics=[
+        Faithfulness(llm=llm), AnswerRelevancy(llm=llm, embeddings=embeddings),
+        LLMContextPrecisionWithReference(llm=llm), LLMContextRecall(llm=llm),
+    ])
+    return result.to_pandas().to_dict(orient="records")
 
 
-def _overlap_scores(candidate: str, reference: str) -> tuple[float, float, float]:
-    candidate_tokens, reference_tokens = _tokens(candidate), _tokens(reference)
-    overlap = len(candidate_tokens & reference_tokens)
-    precision = overlap / len(candidate_tokens) if candidate_tokens else 0.0
-    recall = overlap / len(reference_tokens) if reference_tokens else 0.0
-    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
-    return precision, recall, f1
-
-
-def evaluate_answer(case: dict[str, Any], answer: str, contexts: Iterable[str]) -> dict[str, Any]:
-    """Score a generated answer against its reference topic and RAG context."""
-    expected_document = case["expected_document"]
-    abstained = answer.strip().lower() == ABSTENTION.lower()
-    result: dict[str, Any] = {
-        "question": case["question"], "expected_document": expected_document,
-        "risk_level": case["risk_level"], "difficulty": case["difficulty"],
-        "answer": answer, "abstained": abstained,
-        "abstention_correct": abstained if expected_document is None else not abstained,
-    }
-    if expected_document is None:
-        result.update({"scored": False, "reason": "unanswerable case; only abstention is scored"})
-        return result
-
-    reference = case.get("expected_passage/topic")
-    if not isinstance(reference, str) or not reference.strip():
-        raise ValueError("Answerable cases require a non-empty expected_passage/topic")
-    context = " ".join(contexts)
-    faithfulness, _, _ = _overlap_scores(answer, context)
-    _, completeness, correctness = _overlap_scores(answer, reference)
-    question_terms, answer_terms = _tokens(case["question"]), _tokens(answer)
-    relevance = len(question_terms & answer_terms) / len(question_terms) if question_terms else 0.0
-    result.update({
-        "scored": True, "reference": reference, "faithfulness": faithfulness,
-        "answer_relevance": relevance, "answer_completeness": completeness,
-        "answer_correctness": correctness,
-    })
-    return result
-
-
-def aggregate(results: Iterable[dict[str, Any]]) -> dict[str, Any]:
-    """Average generation metrics and report abstention accuracy separately."""
-    items = list(results)
-    scored = [item for item in items if item["scored"]]
-    metrics = ("faithfulness", "answer_relevance", "answer_completeness", "answer_correctness")
-    summary: dict[str, Any] = {
-        "case_count": len(items), "answerable_case_count": len(scored),
-        "unanswerable_case_count": len(items) - len(scored),
-        "abstention_accuracy": sum(item["abstention_correct"] for item in items) / len(items) if items else None,
-    }
-    summary.update({metric: sum(item[metric] for item in scored) / len(scored) if scored else None for metric in metrics})
-    return summary
-
-
-def _grouped(results: list[dict[str, Any]], field: str) -> dict[str, dict[str, Any]]:
-    groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for result in results:
-        groups[result[field]].append(result)
-    return {name: aggregate(group) for name, group in sorted(groups.items())}
-
-
-def run_evaluation(dataset: Path, policies_dir: Path, db_path: Path, top_k: int = DEFAULT_TOP_K) -> dict[str, Any]:
-    if top_k <= 0:
-        raise ValueError("top_k must be positive")
+def run_evaluation(dataset: Path, policies_dir: Path, db_path: Path, backend: str = "hash",
+                   top_k: int = DEFAULT_TOP_K, embedding_model: str = "text-embedding-3-small",
+                   generation_model: str = "gpt-5-mini", judge_model: str = "gpt-5-mini") -> dict[str, Any]:
+    """Generate and evaluate answers for every golden case."""
     cases = load_cases(dataset)
-    retriever = PolicyRetriever(policies_dir=policies_dir, db_path=db_path)
+    retriever = build_retriever(backend, policies_dir, db_path, embedding_model)
     indexed_chunks = retriever.build_index()
-    results = []
+    rows: list[dict[str, Any]] = []
     for case in cases:
-        response = answer_policy_question(case["question"], retriever, top_k=top_k)
-        results.append(evaluate_answer(case, str(response["answer"]), [item["text"] for item in response["passages"]]))
-    return {
-        "configuration": {"dataset": str(dataset), "policies_dir": str(policies_dir),
-                          "top_k": top_k, "indexed_chunks": indexed_chunks,
-                          "metric_method": "deterministic content-token overlap"},
-        "cases": results,
-        "metrics": {"overall": aggregate(results),
-                    "by_risk_level": _grouped(results, "risk_level"),
-                    "by_difficulty": _grouped(results, "difficulty")},
-    }
+        passages = retriever.retrieve(case["question"], top_k=top_k)
+        contexts = [passage.text for passage in passages]
+        answer = (build_grounded_answer(case["question"], passages) if backend == "hash"
+                  else generate_openai_answer(case["question"], contexts, generation_model))
+        rows.append({"question": case["question"], "reference": case["expected_passage/topic"],
+                     "answer": answer, "contexts": contexts,
+                     "sources": [passage.source for passage in passages],
+                     "risk_level": case["risk_level"], "difficulty": case["difficulty"]})
+
+    for row, scores in zip(rows, run_ragas(rows, judge_model, embedding_model), strict=True):
+        row["ragas"] = {key: value for key, value in scores.items() if key not in
+                        {"user_input", "response", "retrieved_contexts", "reference"}}
+        row["llm_judge"] = judge_answer(row["question"], row["reference"], row["answer"], judge_model)
+
+    names = sorted(rows[0]["ragas"]) if rows else []
+    return {"configuration": {"dataset": str(dataset), "backend": backend, "top_k": top_k,
+            "total_cases": len(rows), "indexed_chunks": indexed_chunks,
+            "embedding_model": embedding_model, "generation_model": generation_model if backend == "openai" else None,
+            "judge_model": judge_model}, "cases": rows,
+            "metrics": {"ragas": {name: mean(float(row["ragas"][name]) for row in rows) for name in names},
+                        "llm_judge_mean": mean(row["llm_judge"]["score"] for row in rows)}}
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", type=Path, default=Path("evals/rag_retrieval_dataset.jsonl"))
     parser.add_argument("--policies-dir", type=Path, default=Path("policies"))
-    parser.add_argument("--db-path", type=Path, default=Path(".rag/generation_evaluation_vectors.sqlite3"))
+
+    parser.add_argument("--db-path", type=Path, default=Path(".rag/generation_vectors.sqlite3"))
+    parser.add_argument("--backend", choices=BACKENDS, default="hash")
     parser.add_argument("--top-k", type=int, default=DEFAULT_TOP_K)
-    parser.add_argument("--output", type=Path, help="Also write the JSON report to this path")
+    parser.add_argument("--embedding-model", default="text-embedding-3-small")
+    parser.add_argument("--generation-model", default="gpt-5-mini")
+    parser.add_argument("--judge-model", default="gpt-5-mini")
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    
-    report = run_evaluation(args.dataset, args.policies_dir, args.db_path, args.top_k)
-    rendered = json.dumps(report, indent=2)
-    # print(rendered)
+    report = run_evaluation(**{key: value for key, value in vars(args).items() if key != "output"})
+    rendered = json.dumps(report, indent=2, allow_nan=False)
+    print(rendered)
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(rendered + "\n", encoding="utf-8")
