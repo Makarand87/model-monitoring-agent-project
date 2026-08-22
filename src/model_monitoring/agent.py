@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import logging
 from collections.abc import Callable
@@ -20,11 +21,13 @@ from model_monitoring.application import (
     get_model_metrics,
 )
 from model_monitoring.models import Breach, MonitoringMetrics, MonitoringStatus
-from model_monitoring.rag.retrieval import RetrievedPassage
+from model_monitoring.rag.retrieval import PolicyRetriever, RetrievedPassage
 
 
 LOGGER = logging.getLogger(__name__)
 T = TypeVar("T")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_POLICY_DB_PATH = PROJECT_ROOT / ".rag" / "policy_vectors.sqlite3"
 
 
 class PolicySearch(Protocol):
@@ -370,3 +373,111 @@ def _serialize(value: Any) -> Any:
     if isinstance(value, (list, tuple)):
         return [_serialize(item) for item in value]
     return value
+
+
+def format_brief_result(result: MonitoringAgentResult) -> str:
+    """Render the decision-relevant output without full retrieved passage text."""
+
+    previous_period = (
+        result.previous_metrics.period if result.previous_metrics else "none"
+    )
+    lines = [
+        f"Model: {result.current_metrics.model_id}",
+        f"Period: {result.current_metrics.period}",
+        f"Previous period: {previous_period}",
+        "",
+        "Breaches:",
+    ]
+    if result.breaches:
+        lines.extend(
+            (
+                f"- {breach.metric.value}: {breach.status.value} "
+                f"(value {breach.value:g}, threshold {breach.threshold:g})"
+            )
+            for breach in result.breaches
+        )
+    else:
+        lines.append("- None")
+
+    lines.extend(
+        [
+            "",
+            f"Assessment: {result.recommendation.summary}",
+            "",
+            "Recommended actions:",
+        ]
+    )
+    for action in result.recommendation.actions:
+        citation_text = ", ".join(action.citations) or "no policy evidence"
+        lines.append(f"- {action.action} [{citation_text}]")
+
+    lines.extend(["", "Policy evidence:"])
+    if result.recommendation.policy_evidence:
+        lines.extend(
+            f"- {item.citation} (relevance {item.score:.3f})"
+            for item in result.recommendation.policy_evidence
+        )
+    else:
+        lines.append("- None retrieved")
+    return "\n".join(lines)
+
+
+def main() -> None:
+    """Run the monitoring agent against a prebuilt, read-only policy index."""
+
+    parser = argparse.ArgumentParser(description="Run the read-only monitoring agent")
+    parser.add_argument("model_id", help="Model identifier, for example M001")
+    parser.add_argument("period", help="Monitoring period in YYYY-MM format")
+    parser.add_argument(
+        "--top-k",
+        type=int,
+        default=3,
+        help="Policy passages to retrieve",
+    )
+    parser.add_argument(
+        "--db-path",
+        type=Path,
+        default=DEFAULT_POLICY_DB_PATH,
+        help="Path to a prebuilt policy vector index",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print the complete result, including passage text and audit records",
+    )
+    parser.add_argument(
+        "--show-audit",
+        action="store_true",
+        help="Append a compact list of tool calls to the brief output",
+    )
+    parser.add_argument(
+        "--log-tool-calls",
+        action="store_true",
+        help="Emit complete structured tool-call logs to stderr",
+    )
+    args = parser.parse_args()
+
+    if args.log_tool_calls:
+        logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+
+    retriever = PolicyRetriever(db_path=args.db_path, read_only=True)
+    result = MonitoringAgent(retriever, top_k=args.top_k).run(
+        args.model_id,
+        args.period,
+    )
+    if args.json:
+        print(result.model_dump_json(indent=2))
+        return
+
+    print(format_brief_result(result))
+    if args.show_audit:
+        print("\nTool calls:")
+        for entry in result.tool_call_log:
+            print(
+                f"- {entry.tool_name}: {entry.status} "
+                f"({entry.duration_ms:.3f} ms)"
+            )
+
+
+if __name__ == "__main__":
+    main()

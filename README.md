@@ -74,6 +74,18 @@ print(result.recommendation.model_dump(mode="json"))
 print([entry.model_dump(mode="json") for entry in result.tool_call_log])
 ```
 
+For normal use, run the concise CLI against the prebuilt read-only index:
+
+```bash
+python -m model_monitoring.agent M001 2026-07
+python -m model_monitoring.agent M001 2026-07 --show-audit
+python -m model_monitoring.agent M001 2026-07 --json
+```
+
+The default view omits full retrieved passage text. Use `--json` for complete
+policy evidence and serialized tool inputs/outputs, or `--log-tool-calls` to
+emit each structured tool call to stderr.
+
 The runtime flow is fixed:
 
 ```text

@@ -9,6 +9,7 @@ from model_monitoring.agent import (
     MonitoringRecommendation,
     PolicyEvidence,
     RecommendedAction,
+    format_brief_result,
 )
 from model_monitoring.models import Breach, MetricName
 from model_monitoring.rag.retrieval import RetrievedPassage
@@ -182,3 +183,18 @@ def test_failed_tool_call_is_logged(policy_passage: RetrievedPassage) -> None:
     assert agent.tool_call_log[0].tool_name == "get_model_metrics"
     assert agent.tool_call_log[0].status == "error"
     assert "LookupError" in (agent.tool_call_log[0].error or "")
+
+
+def test_brief_output_omits_full_policy_passage(
+    policy_passage: RetrievedPassage,
+) -> None:
+    result = MonitoringAgent(SpyPolicySearch([policy_passage])).run(
+        "M001",
+        "2026-07",
+    )
+
+    output = format_brief_result(result)
+
+    assert "psi: RED (value 0.27, threshold 0.25)" in output
+    assert "monitoring_policy.md#chunk-2" in output
+    assert policy_passage.text not in output

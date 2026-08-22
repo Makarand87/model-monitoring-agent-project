@@ -89,12 +89,22 @@ class OpenAIEmbedder:
 class LocalVectorStore:
     """A tiny SQLite-backed local vector store for policy chunks."""
 
-    def __init__(self, db_path: str | Path) -> None:
+    def __init__(self, db_path: str | Path, *, read_only: bool = False) -> None:
         self.db_path = Path(db_path)
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        self._create_schema()
+        self.read_only = read_only
+        if read_only:
+            if not self.db_path.is_file():
+                raise FileNotFoundError(
+                    f"Policy vector index does not exist: {self.db_path}"
+                )
+        else:
+            self.db_path.parent.mkdir(parents=True, exist_ok=True)
+            self._create_schema()
 
     def _connect(self) -> sqlite3.Connection:
+        if self.read_only:
+            uri = f"{self.db_path.resolve().as_uri()}?mode=ro"
+            return sqlite3.connect(uri, uri=True)
         return sqlite3.connect(self.db_path)
 
     def _create_schema(self) -> None:
@@ -114,6 +124,8 @@ class LocalVectorStore:
             )
 
     def replace(self, chunks: Iterable[PolicyChunk], embedder: Embedder) -> None:
+        if self.read_only:
+            raise PermissionError("Cannot replace a read-only policy vector index")
         rows = []
         for chunk in chunks:
             rows.append(
@@ -186,14 +198,18 @@ class PolicyRetriever:
         chunk_size: int = 700,
         chunk_overlap: int = 100,
         embedder: Embedder | None = None,
+        read_only: bool = False,
     ) -> None:
         self.policies_dir = Path(policies_dir)
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.embedder = embedder or HashingEmbedder()
-        self.store = LocalVectorStore(db_path)
+        self.read_only = read_only
+        self.store = LocalVectorStore(db_path, read_only=read_only)
 
     def build_index(self) -> int:
+        if self.read_only:
+            raise PermissionError("Cannot build a read-only policy index")
         documents = load_markdown_documents(self.policies_dir)
         chunks = chunk_documents(
             documents,

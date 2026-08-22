@@ -167,3 +167,24 @@ def test_empty_query_is_rejected(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="query must not be empty"):
         retriever.retrieve("   ")
+
+
+def test_read_only_retriever_can_search_but_cannot_rebuild(tmp_path: Path) -> None:
+    policies = tmp_path / "policies"
+    db_path = tmp_path / "vectors.sqlite3"
+    _write_policy(
+        policies,
+        "policy.md",
+        "# Monitoring Policy\n\nA RED PSI breach requires escalation.",
+    )
+    PolicyRetriever(policies_dir=policies, db_path=db_path).build_index()
+
+    retriever = PolicyRetriever(
+        policies_dir=policies,
+        db_path=db_path,
+        read_only=True,
+    )
+
+    assert retriever.retrieve("RED PSI escalation", top_k=1)
+    with pytest.raises(PermissionError, match="read-only"):
+        retriever.build_index()
