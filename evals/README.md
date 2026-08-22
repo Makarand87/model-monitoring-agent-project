@@ -20,6 +20,7 @@ Coverage includes PSI and AUC thresholds, two-AMBER logic, escalation, revalidat
 
 This dataset is intentionally retrieval-focused. It does not score generated answers or agent behaviour.
 
+
 ## Run the retrieval evaluation
 
 From the repository root (with the project installed), run:
@@ -43,6 +44,8 @@ expected document retrieved in that context; and NDCG uses binary chunk
 relevance. The three deliberately unanswerable cases remain visible in the
 per-case results but are excluded from these ranking metrics because the current
 retriever always returns passages and has no abstention signal.
+
+
 
 
 ## Run the generation evaluation

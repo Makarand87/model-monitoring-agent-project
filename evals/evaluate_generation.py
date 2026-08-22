@@ -26,7 +26,21 @@ _STOP_WORDS = {
 
 def load_cases(path: Path) -> list[dict[str, Any]]:
     """Load generation cases and validate the required reference fields."""
-    cases = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    # cases = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    text = path.read_text(encoding="utf-8")
+    decoder = json.JSONDecoder()
+    cases: list[dict[str, Any]] = []
+    position = 0
+    while position < len(text):
+        while position < len(text) and text[position].isspace():
+            position += 1
+        if position == len(text):
+            break
+        case, position = decoder.raw_decode(text, position)
+        if not isinstance(case, dict):
+            raise ValueError(f"Evaluation case {len(cases) + 1} must be a JSON object")
+        cases.append(case)
+ 
     required = {"question", "expected_document", "expected_passage/topic", "risk_level", "difficulty"}
     for number, case in enumerate(cases, start=1):
         missing = required - case.keys()
@@ -35,6 +49,8 @@ def load_cases(path: Path) -> list[dict[str, Any]]:
     if not cases:
         raise ValueError(f"No evaluation cases found in {path}")
     return cases
+
+
 
 
 def _tokens(text: str) -> set[str]:
@@ -134,9 +150,10 @@ def main() -> None:
     parser.add_argument("--top-k", type=int, default=DEFAULT_TOP_K)
     parser.add_argument("--output", type=Path, help="Also write the JSON report to this path")
     args = parser.parse_args()
+    
     report = run_evaluation(args.dataset, args.policies_dir, args.db_path, args.top_k)
     rendered = json.dumps(report, indent=2)
-    print(rendered)
+    # print(rendered)
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(rendered + "\n", encoding="utf-8")
