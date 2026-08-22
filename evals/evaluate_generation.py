@@ -12,10 +12,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 
 from pathlib import Path
 from statistics import mean
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from evals.evaluate_retrieval import DEFAULT_TOP_K, load_cases
 from model_monitoring.rag.answering import build_grounded_answer

@@ -14,9 +14,12 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import sys
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from model_monitoring.rag.retrieval import (
     chunk_documents,
