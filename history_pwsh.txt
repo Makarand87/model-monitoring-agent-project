@@ -44,3 +44,13 @@ python evals/evaluate_retrieval.py --backend hash --output .rag/retrieval_hash.j
 uv run  evals/evaluate_retrieval.py --backend hash --output .rag/retrieval_hash.json
 uv run  evals/evaluate_retrieval.py --backend openai --output .rag/retrieval_openai.json
 git add .; git commit -m "running evaluators"
+echo "Running command from: $PWD"
+uv run evals/evaluate_generation.py --output .rag/generation_report_2.json
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+uv run python evals/evaluate_generation.py --backend hash --output .rag/generation_hash.json
+pushtogit.sh
+pushtogit.sh.\pushtogit.sh
+.\pushtogit.sh
+uv run .\pushtogit.sh
+git add .; git commit -m "random timepass"

@@ -1,0 +1,8 @@
+# Git is adapting your text file's line endings to match your current operating system
+# To prevent this warning and keep line endings identical for everyone
+
+* text=auto
+
+# *.txt eol=lf
+pyproject.toml eol=lf
+
