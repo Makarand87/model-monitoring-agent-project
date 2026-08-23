@@ -9,9 +9,7 @@ from .retrieval import HashingEmbedder, OpenAIEmbedder, PolicyRetriever
 BACKENDS = ("hash", "openai")
 
 
-def build_retriever(
-    backend: str, policies_dir: Path, db_path: Path, embedding_model: str
-) -> PolicyRetriever:
+def build_retriever(backend: str, policies_dir: Path, db_path: Path, embedding_model: str) -> PolicyRetriever:
     """Build a retriever whose embedding implementation matches ``backend``."""
     if backend == "hash":
         embedder = HashingEmbedder()

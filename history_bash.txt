@@ -1,3 +1,27 @@
  source /c/Users/Makarand/Documents/model-monitoring-agent/.venv/Scripts/activate
 nano ~/.bashrc
 source ~/.bashrc
+ source /c/Users/Makarand/Documents/model-monitoring-agent/.venv/Scripts/activate
+tree -I '__pycache__'
+tree .\src\
+tree .\src\
+tree .\src\
+tree -I '__pycache__'
+ source /c/Users/Makarand/Documents/model-monitoring-agent/.venv/Scripts/activate
+tree -d -I '__pycache__'
+tree -d -I '__pycache__' -o structure.txt
+tree -d -I '__pycache__| _A_' -o structure.txt
+tree -d -I '__pycache__|_A_'
+tree -d -I '__pycache__|_A_' -o structure.txt
+saveh
+nano ~/.bashrc
+source ~/.bashrc
+saveh
+nano ~/.bashrc
+source ~/.bashrc
+nano ~/.bashrc
+source ~/.bashrc
+git branch
+git switch -c rag_answering
+[15;3Rexit
+exit

@@ -4,8 +4,8 @@ import re
 from dataclasses import asdict
 from typing import Iterable
 
-from .retrieval import PolicyRetriever, RetrievedPassage
-
+from .retrieval import RetrievedPassage # PolicyRetriever
+from .backends import build_retriever
 
 def build_grounded_answer(
     query: str,
@@ -53,7 +53,7 @@ def build_grounded_answer(
 
 def answer_policy_question(
     query: str,
-    retriever: PolicyRetriever,
+    retriever: build_retriever,
     top_k: int = 3,
 ) -> dict[str, object]:
     """Convenience orchestration for the demo: retrieve first, answer second."""

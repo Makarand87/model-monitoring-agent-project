@@ -3,3 +3,24 @@ history >> history.txt
 git status
 git status --short
 git add .; git commit -m "automated command history added _A_"
+tree .\src\
+tree .\src\ -I '__pycache__'
+tree -I '__pycache__'
+tree /f | Select-String -NotMatch "__pycache__"`
+
+ & 'c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\python.exe' 'c:\Users\Makarand\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\bundled\libs\debugpy\launcher' '62066' '--' 'C:\Users\Makarand\Documents\model-monitoring-agent\history_pwsh.txt' 
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\python.exe c:/Users/Makarand/Documents/model-monitoring-agent/evals/evaluate_generation.py
+python evals/evaluate_generation.py --backend hash --output .rag/generation_hash.json
+uv add langchain_community[vertexai]
+pip show ragas
+uv add ragas
+exit
+exit
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+uv add ragas
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+uv sync
+git branch
+git switch main
+git add .
