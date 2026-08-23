@@ -25,3 +25,13 @@ git branch
 git switch -c rag_answering
 [15;3Rexit
 exit
+ source /c/Users/Makarand/Documents/model-monitoring-agent/.venv/Scripts/activate
+git branch
+git switch -c langgraph_agent
+git fetch origin all
+git fetch origin main
+git branch -a
+git tl -10
+git reset --hard HEAD~1
+git status --short
+source ~/.bashrc

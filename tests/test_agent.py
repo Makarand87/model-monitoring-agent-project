@@ -87,6 +87,36 @@ def test_agent_uses_latest_history_and_deterministic_breaches(
     assert "auc_change" in result.tool_call_log[3].arguments["query"]
 
 
+def test_no_breach_routes_directly_to_normal_report() -> None:
+    policy_search = SpyPolicySearch([])
+
+    result = MonitoringAgent(policy_search).run("M008", "2026-07")
+
+    assert result.breaches == []
+    assert policy_search.queries == []
+    assert [entry.tool_name for entry in result.tool_call_log] == [
+        "get_model_metrics",
+        "get_historical_metrics",
+        "detect_breaches",
+    ]
+    assert result.recommendation.summary == (
+        "No deterministic PSI or AUC breach was reported."
+    )
+    assert result.recommendation.policy_evidence == []
+
+
+def test_graph_exposes_named_monitoring_nodes(policy_passage: RetrievedPassage) -> None:
+    agent = MonitoringAgent(SpyPolicySearch([policy_passage]))
+
+    assert {
+        "load_data",
+        "detect_breaches",
+        "retrieve_policy",
+        "analyze",
+        "recommend",
+    }.issubset(agent.graph.get_graph().nodes)
+
+
 def test_recommendation_cites_retrieved_policy_evidence(
     policy_passage: RetrievedPassage,
 ) -> None:

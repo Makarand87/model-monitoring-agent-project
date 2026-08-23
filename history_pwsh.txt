@@ -64,3 +64,6 @@ echo
 .\pushtogit.bat
 uv sync
 .\pushtogit.bat
+git status --short
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+.\pushtogit.bat
