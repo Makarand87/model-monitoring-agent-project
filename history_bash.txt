@@ -25,3 +25,5 @@ git branch
 git switch -c rag_answering
 [15;3Rexit
 exit
+git stash
+git merge langgraph_agent

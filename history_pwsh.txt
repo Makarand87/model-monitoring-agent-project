@@ -64,3 +64,20 @@ echo
 .\pushtogit.bat
 uv sync
 .\pushtogit.bat
+notepad $PROFILE
+saveh
+
+try { . "c:\Users\Makarand\AppData\Local\Programs\Microsoft VS Code\110a328ea5\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" } catch {}
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+uv run python evals/evaluate_generation.py --backend hash --output .rag/generation_hash.json
+uv run python evals/evaluate_generation.py --backend openai --output .rag/generation_openai.json
+chmod 700 .\pushtogit.sh
+chmod 700 ./pushtogit.sh
+echo
+.\pushtogit.bat
+uv sync
+.\pushtogit.bat
+git push
+uv run python -m model_monitoring.agent M001 2026-07
+git status --short
+notepad $PROFILE

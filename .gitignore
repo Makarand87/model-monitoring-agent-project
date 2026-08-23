@@ -1,6 +1,7 @@
 # Local RAG vector store
 # .rag/
-
+history_bash.txt
+history_pwsh.txt
 _A_/
 
 # Byte-compiled / optimized / DLL files
