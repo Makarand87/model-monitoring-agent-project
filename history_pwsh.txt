@@ -81,3 +81,6 @@ git push
 uv run python -m model_monitoring.agent M001 2026-07
 git status --short
 notepad $PROFILE
+git status --short
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+.\pushtogit.bat

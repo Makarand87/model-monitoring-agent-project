@@ -16,7 +16,7 @@ Python foundation for a model-performance monitoring application, extended with 
   - retrieves top-k passages,
   - returns passage text, similarity score and source metadata.
 - A separate extractive answer layer so retrieval can be evaluated independently from answer construction.
-- A read-only agent that runs deterministic monitoring tools, retrieves policy evidence and returns cited recommendations with a structured audit log of every tool call.
+- A read-only LangGraph agent that runs deterministic monitoring tools, conditionally retrieves policy evidence and returns cited recommendations with a structured audit log of every tool call.
 - pytest tests for document loading, metadata, retrieval, grounded answering and invalid queries.
 
 ## Setup and test
@@ -86,15 +86,36 @@ The default view omits full retrieved passage text. Use `--json` for complete
 policy evidence and serialized tool inputs/outputs, or `--log-tool-calls` to
 emit each structured tool call to stderr.
 
-The runtime flow is fixed:
+The runtime is an explicit LangGraph workflow. Normal results bypass retrieval;
+breaches enter the policy-grounded investigation path:
 
-```text
-get_model_metrics()
-    -> get_historical_metrics()
-    -> detect_breaches()
-    -> search_policy()
-    -> recommendation
+```mermaid
+flowchart TD
+    START((Start)) --> LOAD[Load data]
+    LOAD --> DETECT[Breach detection]
+    DETECT -->|No breach| RECOMMEND[Recommendation / normal report]
+    DETECT -->|Breach| POLICY[Policy retrieval]
+    POLICY --> ANALYZE[Analysis]
+    ANALYZE --> RECOMMEND
+    RECOMMEND --> END((End))
 ```
+
+### Graph state
+
+`MonitoringGraphState` is a Pydantic model shared by all nodes. It begins with
+`model_id` and `period`, then is enriched without changing the deterministic
+monitoring calculations:
+
+| Node | Reads | Adds to state |
+|---|---|---|
+| Loading data | `model_id`, `period` | `current_metrics`, ordered `historical_metrics`, `previous_metrics` |
+| Breach detection | current and previous metrics | deterministic `breaches` from `detect_breaches()` |
+| Policy retrieval (breach only) | `breaches` | cited `policy_evidence` |
+| Analysis (breach only) | `breaches`, `policy_evidence` | a policy-grounded recommendation draft in `analysis` |
+| Recommendation | breaches and optional analysis/evidence | final `recommendation`; for the no-breach route this is the normal report |
+
+The public `MonitoringAgentResult` remains the stable output boundary and adds
+the run's structured `tool_call_log` to the graph state results.
 
 The recommendation builder receives only deterministic `Breach` objects and
 retrieved policy passages. It cannot recalculate PSI or AUC from raw monitoring
@@ -190,4 +211,4 @@ model-monitoring-agent-project/
 - The local hashing embedder is deterministic and transparent but less semantically capable than a trained embedding model.
 - Similarity search currently reads the small local vector table and calculates cosine-equivalent dot-product ranking in Python; this is appropriate for a small learning corpus, not enterprise-scale retrieval.
 - The answer layer is extractive rather than an LLM generator.
-- No LangGraph workflow, MCP server/client, autonomous action, or production database integration has been added yet.
+- No MCP server/client, autonomous action, or production database integration has been added yet.

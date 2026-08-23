@@ -12,6 +12,7 @@ from pathlib import Path
 from time import perf_counter
 from typing import Any, Literal, Protocol, TypeVar
 
+from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, ConfigDict, Field
 
 from model_monitoring.application import (
@@ -96,6 +97,22 @@ class MonitoringAgentResult(BaseModel):
     tool_call_log: list[ToolCallLogEntry]
 
 
+class MonitoringGraphState(BaseModel):
+    """Typed state passed between the monitoring graph's nodes."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    model_id: str
+    period: str
+    current_metrics: MonitoringMetrics | None = None
+    historical_metrics: list[MonitoringMetrics] = Field(default_factory=list)
+    previous_metrics: MonitoringMetrics | None = None
+    breaches: list[Breach] = Field(default_factory=list)
+    policy_evidence: list[PolicyEvidence] = Field(default_factory=list)
+    analysis: MonitoringRecommendation | None = None
+    recommendation: MonitoringRecommendation | None = None
+
+
 RecommendationBuilder = Callable[
     [list[Breach], list[PolicyEvidence]], MonitoringRecommendation
 ]
@@ -128,6 +145,7 @@ class MonitoringAgent:
         )
         self.logger = logger or LOGGER
         self._tool_call_log: list[ToolCallLogEntry] = []
+        self.graph = self._build_graph()
 
     @property
     def tool_call_log(self) -> tuple[ToolCallLogEntry, ...]:
@@ -136,29 +154,90 @@ class MonitoringAgent:
         return tuple(self._tool_call_log)
 
     def run(self, model_id: str, period: str) -> MonitoringAgentResult:
-        """Execute the fixed read-only monitoring flow for one model-period."""
+        """Execute the read-only LangGraph workflow for one model-period."""
 
         self._tool_call_log = []
-        current = self._get_model_metrics(model_id, period)
-        history = self._get_historical_metrics(model_id, current.period)
-        previous = history[-1] if history else None
-        breaches = self._detect_breaches(current, previous)
-        passages = self._search_policy(_build_policy_query(breaches))
-        evidence = [_policy_evidence(passage) for passage in passages]
-        if evidence:
-            recommendation = self.recommendation_builder(breaches, evidence)
-            _validate_recommendation_citations(recommendation, evidence)
-        else:
-            recommendation = build_monitoring_recommendation(breaches, evidence)
+        output = self.graph.invoke(
+            MonitoringGraphState(model_id=model_id, period=period)
+        )
+        state = MonitoringGraphState.model_validate(output)
+        if state.current_metrics is None or state.recommendation is None:
+            raise RuntimeError("Monitoring graph completed without a result")
 
         return MonitoringAgentResult(
-            current_metrics=current,
-            historical_metrics=history,
-            previous_metrics=previous,
-            breaches=breaches,
-            recommendation=recommendation,
+            current_metrics=state.current_metrics,
+            historical_metrics=state.historical_metrics,
+            previous_metrics=state.previous_metrics,
+            breaches=state.breaches,
+            recommendation=state.recommendation,
             tool_call_log=list(self._tool_call_log),
         )
+
+    def _build_graph(self):
+        """Compile the explicit monitoring workflow and its breach routing."""
+
+        workflow = StateGraph(MonitoringGraphState)
+        workflow.add_node("load_data", self._load_data_node)
+        workflow.add_node("detect_breaches", self._breach_detection_node)
+        workflow.add_node("retrieve_policy", self._policy_retrieval_node)
+        workflow.add_node("analyze", self._analysis_node)
+        workflow.add_node("recommend", self._recommendation_node)
+        workflow.add_edge(START, "load_data")
+        workflow.add_edge("load_data", "detect_breaches")
+        workflow.add_conditional_edges(
+            "detect_breaches",
+            self._route_after_detection,
+            {"normal": "recommend", "breach": "retrieve_policy"},
+        )
+        workflow.add_edge("retrieve_policy", "analyze")
+        workflow.add_edge("analyze", "recommend")
+        workflow.add_edge("recommend", END)
+        return workflow.compile()
+
+    def _load_data_node(self, state: MonitoringGraphState) -> dict[str, Any]:
+        current = self._get_model_metrics(state.model_id, state.period)
+        history = self._get_historical_metrics(state.model_id, current.period)
+        return {
+            "current_metrics": current,
+            "historical_metrics": history,
+            "previous_metrics": history[-1] if history else None,
+        }
+
+    def _breach_detection_node(self, state: MonitoringGraphState) -> dict[str, Any]:
+        if state.current_metrics is None:
+            raise RuntimeError("Data must be loaded before breach detection")
+        return {
+            "breaches": self._detect_breaches(
+                state.current_metrics,
+                state.previous_metrics,
+            )
+        }
+
+    @staticmethod
+    def _route_after_detection(state: MonitoringGraphState) -> Literal["normal", "breach"]:
+        return "breach" if state.breaches else "normal"
+
+    def _policy_retrieval_node(self, state: MonitoringGraphState) -> dict[str, Any]:
+        passages = self._search_policy(_build_policy_query(state.breaches))
+        return {"policy_evidence": [_policy_evidence(item) for item in passages]}
+
+    def _analysis_node(self, state: MonitoringGraphState) -> dict[str, Any]:
+        evidence = state.policy_evidence
+        analysis = (
+            self.recommendation_builder(state.breaches, evidence)
+            if evidence
+            else build_monitoring_recommendation(state.breaches, evidence)
+        )
+        return {"analysis": analysis}
+
+    def _recommendation_node(self, state: MonitoringGraphState) -> dict[str, Any]:
+        recommendation = state.analysis or build_monitoring_recommendation(
+            state.breaches,
+            state.policy_evidence,
+        )
+        if state.policy_evidence:
+            _validate_recommendation_citations(recommendation, state.policy_evidence)
+        return {"recommendation": recommendation}
 
     def _get_model_metrics(self, model_id: str, period: str) -> MonitoringMetrics:
         return self._call_tool(
