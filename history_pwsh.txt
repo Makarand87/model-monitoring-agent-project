@@ -61,3 +61,4 @@ uv run python evals/evaluate_generation.py --backend openai --output .rag/genera
 chmod 700 .\pushtogit.sh
 chmod 700 ./pushtogit.sh
 echo
+.\pushtogit.bat
