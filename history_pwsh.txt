@@ -59,3 +59,5 @@ git push origin main
 uv run python evals/evaluate_generation.py --backend hash --output .rag/generation_hash_2.json
 uv sync
 uv run python evals/evaluate_generation.py --backend hash --output .rag/generation_hash.json
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+uv run python evals/evaluate_generation.py --backend hash --output .rag/generation_hash.json

@@ -38,6 +38,7 @@ def test_judge_answer_validates_and_returns_structured_result(monkeypatch: pytes
         @staticmethod
         def create(**kwargs):
             assert kwargs["text"]["format"]["type"] == "json_object"
+            assert "json" in kwargs["input"]
             return type("Response", (), {"output_text": json.dumps({"score": 5, "reason": "Grounded"})})()
 
     class Client:

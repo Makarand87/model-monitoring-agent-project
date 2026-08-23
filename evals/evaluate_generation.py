@@ -50,11 +50,14 @@ def judge_answer(question: str, reference: str, answer: str, model: str) -> dict
         model=model,
         instructions=(
             "Act as a strict answer-correctness judge. Compare the candidate with the "
-            "reference. Return JSON with integer score (1 wholly incorrect to 5 fully "
+            "reference. Return a json object with integer score (1 wholly incorrect to 5 fully "
             "correct) and a brief reason. For an UNANSWERABLE reference, full credit "
             "requires the candidate to abstain rather than invent a value."
         ),
-        input=f"Question: {question}\nReference: {reference}\nCandidate: {answer}",
+        input=(
+            "Return your judgment as a json object.\n"
+            f"Question: {question}\nReference: {reference}\nCandidate: {answer}"
+        ),
         text={"format": {"type": "json_object"}},
     )
     result = json.loads(response.output_text)
@@ -87,7 +90,7 @@ def run_ragas(rows: list[dict[str, Any]], judge_model: str, embedding_model: str
 
 def run_evaluation(dataset: Path, policies_dir: Path, db_path: Path, backend: str = "hash",
                    top_k: int = DEFAULT_TOP_K, embedding_model: str = "text-embedding-3-small",
-                   generation_model: str = "gpt-5-mini", judge_model: str = "gpt-5-mini") -> dict[str, Any]:
+                   generation_model: str = "gpt-5-mini", judge_model: str = "gpt-4.1-mini") -> dict[str, Any]:
     """Generate and evaluate answers for every golden case."""
     cases = load_cases(dataset)
     retriever = build_retriever(backend, policies_dir, db_path, embedding_model)
@@ -127,7 +130,7 @@ def main() -> None:
     parser.add_argument("--top-k", type=int, default=DEFAULT_TOP_K)
     parser.add_argument("--embedding-model", default="text-embedding-3-small")
     parser.add_argument("--generation-model", default="gpt-5-mini")
-    parser.add_argument("--judge-model", default="gpt-5-mini")
+    parser.add_argument("--judge-model", default="gpt-4.1-mini")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     report = run_evaluation(**{key: value for key, value in vars(args).items() if key != "output"})
