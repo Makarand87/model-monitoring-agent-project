@@ -55,9 +55,9 @@ pushtogit.sh.\pushtogit.sh
 uv run .\pushtogit.sh
 git add .; git commit -m "random timepass"
 git push origin main
-(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
-uv run python evals/evaluate_generation.py --backend hash --output .rag/generation_hash_2.json
 uv sync
 uv run python evals/evaluate_generation.py --backend hash --output .rag/generation_hash.json
-(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
-uv run python evals/evaluate_generation.py --backend hash --output .rag/generation_hash.json
+uv run python evals/evaluate_generation.py --backend openai --output .rag/generation_openai.json
+chmod 700 .\pushtogit.sh
+chmod 700 ./pushtogit.sh
+echo

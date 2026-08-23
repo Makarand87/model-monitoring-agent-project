@@ -1,0 +1,833 @@
+{
+  "configuration": {
+    "dataset": "evals\\rag_retrieval_dataset.jsonl",
+    "backend": "openai",
+    "top_k": 3,
+    "total_cases": 30,
+    "indexed_chunks": 30,
+    "embedding_model": "text-embedding-3-small",
+    "generation_model": "gpt-5-mini",
+    "judge_model": "gpt-4.1-mini"
+  },
+  "cases": [
+    {
+      "question": "What action is required when PSI exceeds 0.25?",
+      "reference": "RED PSI breach; escalate to model owner and MRM, investigate population segments driving the shift",
+      "answer": "PSI >= 0.25 is RED. Required actions (from policy):\n\n- Escalate the breach to the model owner and Model Risk Management (MRM) per the Monitoring Escalation Procedure.  \n- Investigate and document the population segments driving the shift and whether movement is due to business mix, data changes, strategy changes, or potential model deterioration (quantify segment contribution if New-to-Credit is primary driver).  \n- Determine whether targeted revalidation or increased monitoring frequency is required.  \n- Note: any material remediation (recalibration, cutoff changes, redevelopment, suspension) requires authorized human approval.",
+      "contexts": [
+        "mediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.\n\n## PSI example\nWhen PSI is 0.25 or higher, the PSI status is RED. The required action is escalation to the model owner and MRM, followed by investigation of the population segments driving the shift.\n\n## Human decision\nThe monitoring process may recommend actions, but material remediation decisions such as model recalibration, cutoff changes, redevelopment, or model suspension require authorized human approval.",
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "un to shift toward New-to-Credit applicants, creating sensitivity in PSI and approval-rate measures.\n\n## Monitoring recommendation\nMonthly PSI and segment-level PSI must be reviewed. A RED PSI breach must be escalated in accordance with the Monitoring Escalation Procedure. If the New-to-Credit segment is the primary driver, management must quantify the segment contribution before concluding that the model itself has deteriorated.\n\n## Open limitation\nThe model has limited historical depth for recently introduced acquisition channels. Monitoring commentary should distinguish channel-mix change from model-performance change."
+      ],
+      "sources": [
+        "escalation_procedure.md",
+        "monitoring_policy.md",
+        "previous_validation_report.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.952466734778339,
+        "llm_context_precision_with_reference": 0.9999999999666667,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate fully captures the required action when PSI exceeds 0.25, including escalation to the model owner and MRM, investigation of population segments driving the shift, and further steps like determining revalidation or increased monitoring. It provides more detailed instructions in line with the reference, showing a complete understanding without contradiction."
+      }
+    },
+    {
+      "question": "How is a PSI of 0.09 classified?",
+      "reference": "PSI below 0.10 is GREEN",
+      "answer": "A PSI of 0.09 is classified as GREEN.",
+      "contexts": [
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "mediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.\n\n## PSI example\nWhen PSI is 0.25 or higher, the PSI status is RED. The required action is escalation to the model owner and MRM, followed by investigation of the population segments driving the shift.\n\n## Human decision\nThe monitoring process may recommend actions, but material remediation decisions such as model recalibration, cutoff changes, redevelopment, or model suspension require authorized human approval.",
+        "# Initial Monitoring Thresholds\n\nThese provisional rules give the project a transparent policy baseline and are implemented by the deterministic monitoring application.\n\n| Metric | Green | Amber | Red |\n|---|---|---|---|\n| PSI | `<= 0.10` | `> 0.10 to <= 0.25` | `> 0.25` |\n| AUC deterioration from previous period | `<= 0.03` | `> 0.03 to <= 0.05` | `> 0.05` |\n| Bad-rate relative increase | `< 10%` | `10% to < 20%` | `>= 20%` |\n| Approval-rate absolute change | `< 0.03` | `0.03 to < 0.05` | `>= 0.05` |\n\nThresholds must be reviewed and approved by Model Risk Management and the model owner before production use."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "escalation_procedure.md",
+        "monitoring_thresholds_v2.md"
+      ],
+      "risk_level": "LOW",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8632825938050582,
+        "llm_context_precision_with_reference": 0.8333333332916666,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate's answer correctly classifies a PSI of 0.09 as GREEN, which matches the reference information."
+      }
+    },
+    {
+      "question": "How is a PSI of exactly 0.10 classified?",
+      "reference": "PSI from 0.10 up to but below 0.25 is AMBER",
+      "answer": "AMBER \u2014 the policy classifies 0.10 \u2264 PSI < 0.25 as AMBER.",
+      "contexts": [
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "mediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.\n\n## PSI example\nWhen PSI is 0.25 or higher, the PSI status is RED. The required action is escalation to the model owner and MRM, followed by investigation of the population segments driving the shift.\n\n## Human decision\nThe monitoring process may recommend actions, but material remediation decisions such as model recalibration, cutoff changes, redevelopment, or model suspension require authorized human approval.",
+        "# Model Performance Monitoring Policy\n\n## Purpose\nThis policy defines the minimum monitoring requirements for production credit-risk and decision models.\n\n## Core metrics\nModels must be reviewed for population stability, discriminatory performance, outcome movement, approval-rate movement, missing-data changes, and material segment deterioration.\n\n## PSI thresholds\nPopulation Stability Index (PSI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "escalation_procedure.md",
+        "monitoring_policy.md"
+      ],
+      "risk_level": "MEDIUM",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.5435256115986966,
+        "llm_context_precision_with_reference": 0.8333333332916666,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly classifies a PSI of exactly 0.10 as AMBER, matching the reference criteria precisely."
+      }
+    },
+    {
+      "question": "How is a PSI of 0.249 classified?",
+      "reference": "PSI below 0.25 but at least 0.10 is AMBER",
+      "answer": "AMBER \u2014 0.249 falls in the 0.10 \u2264 PSI < 0.25 range.",
+      "contexts": [
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "mediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.\n\n## PSI example\nWhen PSI is 0.25 or higher, the PSI status is RED. The required action is escalation to the model owner and MRM, followed by investigation of the population segments driving the shift.\n\n## Human decision\nThe monitoring process may recommend actions, but material remediation decisions such as model recalibration, cutoff changes, redevelopment, or model suspension require authorized human approval.",
+        "# Model Performance Monitoring Policy\n\n## Purpose\nThis policy defines the minimum monitoring requirements for production credit-risk and decision models.\n\n## Core metrics\nModels must be reviewed for population stability, discriminatory performance, outcome movement, approval-rate movement, missing-data changes, and material segment deterioration.\n\n## PSI thresholds\nPopulation Stability Index (PSI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "escalation_procedure.md",
+        "monitoring_policy.md"
+      ],
+      "risk_level": "MEDIUM",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.557313348519855,
+        "llm_context_precision_with_reference": 0.8333333332916666,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly classifies a PSI of 0.249 as AMBER and accurately states that 0.249 falls within the specified range of 0.10 \u2264 PSI < 0.25, matching the reference exactly."
+      }
+    },
+    {
+      "question": "How is a PSI of exactly 0.25 classified?",
+      "reference": "PSI at or above 0.25 is RED",
+      "answer": "A PSI of exactly 0.25 is classified as RED.  \nRequired actions: escalate to the model owner and Model Risk Management (MRM); the monitoring analyst must investigate the main population segments driving the shift and document whether causes are business mix, data changes, strategy changes, or potential model deterioration.",
+      "contexts": [
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "mediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.\n\n## PSI example\nWhen PSI is 0.25 or higher, the PSI status is RED. The required action is escalation to the model owner and MRM, followed by investigation of the population segments driving the shift.\n\n## Human decision\nThe monitoring process may recommend actions, but material remediation decisions such as model recalibration, cutoff changes, redevelopment, or model suspension require authorized human approval.",
+        "# Model Performance Monitoring Policy\n\n## Purpose\nThis policy defines the minimum monitoring requirements for production credit-risk and decision models.\n\n## Core metrics\nModels must be reviewed for population stability, discriminatory performance, outcome movement, approval-rate movement, missing-data changes, and material segment deterioration.\n\n## PSI thresholds\nPopulation Stability Index (PSI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "escalation_procedure.md",
+        "monitoring_policy.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.7893135964242378,
+        "llm_context_precision_with_reference": 0.9999999999666667,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate accurately states that a PSI of exactly 0.25 is classified as RED, matching the reference. Additionally, the candidate provides required actions that are logically consistent and appropriate for this classification, adding relevant procedural context."
+      }
+    },
+    {
+      "question": "How is an AUC deterioration of 0.02 from the approved baseline classified?",
+      "reference": "AUC decrease below 0.03 is GREEN",
+      "answer": "GREEN \u2014 a 0.02 decrease is below the 0.03 green threshold.",
+      "contexts": [
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "channels. Monitoring commentary should distinguish channel-mix change from model-performance change.\n\n## Follow-up\nTargeted revalidation should be considered if RED AUC deterioration persists for two consecutive monitoring periods or if a material data/implementation issue is identified.",
+        "# Initial Monitoring Thresholds\n\nThese provisional rules give the project a transparent policy baseline and are implemented by the deterministic monitoring application.\n\n| Metric | Green | Amber | Red |\n|---|---|---|---|\n| PSI | `<= 0.10` | `> 0.10 to <= 0.25` | `> 0.25` |\n| AUC deterioration from previous period | `<= 0.03` | `> 0.03 to <= 0.05` | `> 0.05` |\n| Bad-rate relative increase | `< 10%` | `10% to < 20%` | `>= 20%` |\n| Approval-rate absolute change | `< 0.03` | `0.03 to < 0.05` | `>= 0.05` |\n\nThresholds must be reviewed and approved by Model Risk Management and the model owner before production use."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "previous_validation_report.md",
+        "monitoring_thresholds_v2.md"
+      ],
+      "risk_level": "LOW",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.45762784071616547,
+        "llm_context_precision_with_reference": 0.8333333332916666,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly identifies the classification as GREEN, accurately referencing the 0.03 threshold and the given 0.02 decrease."
+      }
+    },
+    {
+      "question": "How is an AUC deterioration of 0.04 from the approved baseline classified?",
+      "reference": "AUC decrease from 0.03 to below 0.05 is AMBER",
+      "answer": "AMBER \u2014 a 0.04 decrease falls in the 0.03 to <0.05 range.",
+      "contexts": [
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "channels. Monitoring commentary should distinguish channel-mix change from model-performance change.\n\n## Follow-up\nTargeted revalidation should be considered if RED AUC deterioration persists for two consecutive monitoring periods or if a material data/implementation issue is identified.",
+        "# Initial Monitoring Thresholds\n\nThese provisional rules give the project a transparent policy baseline and are implemented by the deterministic monitoring application.\n\n| Metric | Green | Amber | Red |\n|---|---|---|---|\n| PSI | `<= 0.10` | `> 0.10 to <= 0.25` | `> 0.25` |\n| AUC deterioration from previous period | `<= 0.03` | `> 0.03 to <= 0.05` | `> 0.05` |\n| Bad-rate relative increase | `< 10%` | `10% to < 20%` | `>= 20%` |\n| Approval-rate absolute change | `< 0.03` | `0.03 to < 0.05` | `>= 0.05` |\n\nThresholds must be reviewed and approved by Model Risk Management and the model owner before production use."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "previous_validation_report.md",
+        "monitoring_thresholds_v2.md"
+      ],
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.3505539471275582,
+        "llm_context_precision_with_reference": 0.8333333332916666,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly classifies a 0.04 AUC deterioration as AMBER, matching the reference criteria of AUC decrease from 0.03 to below 0.05 being AMBER."
+      }
+    },
+    {
+      "question": "How is an AUC deterioration of exactly 0.05 from the approved baseline classified?",
+      "reference": "AUC decrease at or above 0.05 is RED",
+      "answer": "RED \u2014 the policy states AUC deterioration from the approved baseline >= 0.05 is classified as RED.",
+      "contexts": [
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "channels. Monitoring commentary should distinguish channel-mix change from model-performance change.\n\n## Follow-up\nTargeted revalidation should be considered if RED AUC deterioration persists for two consecutive monitoring periods or if a material data/implementation issue is identified.",
+        "# Initial Monitoring Thresholds\n\nThese provisional rules give the project a transparent policy baseline and are implemented by the deterministic monitoring application.\n\n| Metric | Green | Amber | Red |\n|---|---|---|---|\n| PSI | `<= 0.10` | `> 0.10 to <= 0.25` | `> 0.25` |\n| AUC deterioration from previous period | `<= 0.03` | `> 0.03 to <= 0.05` | `> 0.05` |\n| Bad-rate relative increase | `< 10%` | `10% to < 20%` | `>= 20%` |\n| Approval-rate absolute change | `< 0.03` | `0.03 to < 0.05` | `>= 0.05` |\n\nThresholds must be reviewed and approved by Model Risk Management and the model owner before production use."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "previous_validation_report.md",
+        "monitoring_thresholds_v2.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.7086310974474853,
+        "llm_context_precision_with_reference": 0.9999999999666667,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly states that an AUC deterioration of exactly 0.05 is classified as RED, matching the reference's criterion of 'AUC decrease at or above 0.05 is RED.'"
+      }
+    },
+    {
+      "question": "What action is required when two monitoring metrics are AMBER in the same monitoring period?",
+      "reference": "Two or more AMBER metrics require mandatory investigation and documented commentary",
+      "answer": "The policy requires a mandatory investigation and documented management commentary. Also record the metric value, threshold used, monitoring period, affected model, source data, and reviewer.",
+      "contexts": [
+        "gation is mandatory when two or more metrics are classified AMBER during the same monitoring period.\n\n## Required steps for RED\n1. Record the breached metric, observed value, threshold, model, and monitoring period.\n2. Notify the model owner and Model Risk Management.\n3. Perform segment-level and historical analysis to identify likely drivers.\n4. Assess whether the issue is caused by data, population, business strategy, implementation, or model deterioration.\n5. Document immediate controls and recommended remediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.",
+        "ified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.\n\n## Overall action rule\nAny RED monitoring breach requires escalation. Two or more AMBER breaches in the same monitoring period require investigation and documented management commentary.\n\n## Evidence\nEvery monitoring conclusion must record the metric value, threshold used, monitoring period, affected model, source data, and reviewer.",
+        "# Monitoring Escalation Procedure\n\n## Trigger\nEscalation is mandatory when any monitoring metric is classified RED. Investigation is mandatory when two or more metrics are classified AMBER during the same monitoring period."
+      ],
+      "sources": [
+        "escalation_procedure.md",
+        "monitoring_policy.md",
+        "escalation_procedure.md"
+      ],
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.45996384861344985,
+        "llm_context_precision_with_reference": 0.9999999999666667,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 4,
+        "reason": "The candidate correctly states the need for mandatory investigation and documented commentary as per the reference. Additionally, it provides extra detail about recording metric value, threshold, monitoring period, affected model, source data, and reviewer, which is not mentioned in the reference but does not contradict it. The core required action is accurately captured."
+      }
+    },
+    {
+      "question": "What action is required when any one monitoring metric is classified RED?",
+      "reference": "Any RED metric requires escalation; record evidence, notify owner and MRM, investigate drivers",
+      "answer": "Escalation is mandatory. Required steps for a RED breach:\n1. Record the breached metric, observed value, threshold, model, and monitoring period.\n2. Notify the model owner and Model Risk Management.\n3. Perform segment-level and historical analysis to identify likely drivers.\n4. Assess whether the issue is caused by data, population, business strategy, implementation, or model deterioration.\n5. Document immediate controls and recommended remediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.\n\nAlso, every monitoring conclusion must record the metric value, threshold used, monitoring period, affected model, source data, and reviewer.",
+      "contexts": [
+        "gation is mandatory when two or more metrics are classified AMBER during the same monitoring period.\n\n## Required steps for RED\n1. Record the breached metric, observed value, threshold, model, and monitoring period.\n2. Notify the model owner and Model Risk Management.\n3. Perform segment-level and historical analysis to identify likely drivers.\n4. Assess whether the issue is caused by data, population, business strategy, implementation, or model deterioration.\n5. Document immediate controls and recommended remediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.",
+        "# Monitoring Escalation Procedure\n\n## Trigger\nEscalation is mandatory when any monitoring metric is classified RED. Investigation is mandatory when two or more metrics are classified AMBER during the same monitoring period.",
+        "ified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.\n\n## Overall action rule\nAny RED monitoring breach requires escalation. Two or more AMBER breaches in the same monitoring period require investigation and documented management commentary.\n\n## Evidence\nEvery monitoring conclusion must record the metric value, threshold used, monitoring period, affected model, source data, and reviewer."
+      ],
+      "sources": [
+        "escalation_procedure.md",
+        "escalation_procedure.md",
+        "monitoring_policy.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.6544062455889414,
+        "llm_context_precision_with_reference": 0.9999999999666667,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate's answer fully captures the required action for a RED metric as stated in the reference: escalation is needed, recording evidence, notifying the owner and MRM, and investigating the drivers. Moreover, the candidate provides a detailed, expanded version of these steps without contradicting the reference."
+      }
+    },
+    {
+      "question": "What events trigger targeted revalidation?",
+      "reference": "Targeted revalidation triggers include sustained RED deterioration, material model or data change, use change, repeated unresolved issues, or material control failure",
+      "answer": "Targeted revalidation is required when any of the following occur (per the policy):\n\n- Sustained RED performance deterioration (e.g., RED AUC deterioration persisting for two consecutive monitoring periods).  \n- A material change in model design or model data.  \n- A significant change in model use.  \n- Repeated unresolved monitoring issues.  \n- A material control failure.  \n- A material data or implementation issue (policy says revalidation should be considered if such an issue is identified).\n\n(Policy also notes PSI >= 0.25 is RED and should be escalated and investigated; sustained RED status can drive consideration of targeted revalidation.)",
+      "contexts": [
+        "# Model Validation Policy\n\n## Purpose\nIndependent validation must assess whether a model remains fit for its approved use and whether monitoring evidence supports continued reliance on the model.\n\n## Validation triggers\nTargeted revalidation is required when there is sustained RED performance deterioration, a material change in model design or data, a significant change in use, repeated unresolved monitoring issues, or a material control failure.\n\n## Monitoring evidence\nValidators must review current and historical performance, critical segments, data-quality exceptions, threshold breaches, business changes, overrides, known limitations, and previous remediation items.",
+        "mediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.\n\n## PSI example\nWhen PSI is 0.25 or higher, the PSI status is RED. The required action is escalation to the model owner and MRM, followed by investigation of the population segments driving the shift.\n\n## Human decision\nThe monitoring process may recommend actions, but material remediation decisions such as model recalibration, cutoff changes, redevelopment, or model suspension require authorized human approval.",
+        "channels. Monitoring commentary should distinguish channel-mix change from model-performance change.\n\n## Follow-up\nTargeted revalidation should be considered if RED AUC deterioration persists for two consecutive monitoring periods or if a material data/implementation issue is identified."
+      ],
+      "sources": [
+        "validation_policy.md",
+        "escalation_procedure.md",
+        "previous_validation_report.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 0.7857142857142857,
+        "answer_relevancy": 0.7336463037112674,
+        "llm_context_precision_with_reference": 0.8333333332916666,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate accurately lists all the key events triggering targeted revalidation mentioned in the reference, including sustained RED deterioration, material model or data change, use change, repeated unresolved issues, and material control failure. It also adds relevant policy details without contradicting the reference."
+      }
+    },
+    {
+      "question": "When may a validation issue be closed?",
+      "reference": "Issue closure requires evidence that root cause is addressed or residual risk is formally accepted",
+      "answer": "A validation issue may be closed only when evidence demonstrates that either the root cause has been addressed or the residual risk has been formally accepted by the appropriate governance authority.",
+      "contexts": [
+        "threshold breaches, business changes, overrides, known limitations, and previous remediation items.\n\n## Challenge expectations\nValidation must independently challenge the monitoring methodology, threshold rationale, root-cause conclusions, and management actions. Aggregate performance alone is not sufficient where critical segments show material deterioration.\n\n## Closure\nA validation issue may be closed only when evidence demonstrates that the root cause has been addressed or the residual risk has been formally accepted by the appropriate governance authority.",
+        "# Model Validation Policy\n\n## Purpose\nIndependent validation must assess whether a model remains fit for its approved use and whether monitoring evidence supports continued reliance on the model.\n\n## Validation triggers\nTargeted revalidation is required when there is sustained RED performance deterioration, a material change in model design or data, a significant change in use, repeated unresolved monitoring issues, or a material control failure.\n\n## Monitoring evidence\nValidators must review current and historical performance, critical segments, data-quality exceptions, threshold breaches, business changes, overrides, known limitations, and previous remediation items.",
+        "mediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.\n\n## PSI example\nWhen PSI is 0.25 or higher, the PSI status is RED. The required action is escalation to the model owner and MRM, followed by investigation of the population segments driving the shift.\n\n## Human decision\nThe monitoring process may recommend actions, but material remediation decisions such as model recalibration, cutoff changes, redevelopment, or model suspension require authorized human approval."
+      ],
+      "sources": [
+        "validation_policy.md",
+        "validation_policy.md",
+        "escalation_procedure.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9913485289056915,
+        "llm_context_precision_with_reference": 0.9999999999,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate answer fully matches the reference in meaning and detail, specifying that closure requires evidence that the root cause is addressed or the residual risk is formally accepted."
+      }
+    },
+    {
+      "question": "Can a RED monitoring breach be closed only with management commentary?",
+      "reference": "RED breaches cannot be closed solely through management commentary; supporting analysis and approved disposition are required",
+      "answer": "No. RED breaches cannot be closed solely with management commentary. They require escalation plus supporting analysis and an approved disposition. Required steps include recording the breach details, notifying the model owner and Model Risk Management, performing segment\u2011level and historical analysis, assessing root causes, documenting controls and remediation, and determining revalidation or increased monitoring.",
+      "contexts": [
+        "ified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.\n\n## Overall action rule\nAny RED monitoring breach requires escalation. Two or more AMBER breaches in the same monitoring period require investigation and documented management commentary.\n\n## Evidence\nEvery monitoring conclusion must record the metric value, threshold used, monitoring period, affected model, source data, and reviewer.",
+        "gation is mandatory when two or more metrics are classified AMBER during the same monitoring period.\n\n## Required steps for RED\n1. Record the breached metric, observed value, threshold, model, and monitoring period.\n2. Notify the model owner and Model Risk Management.\n3. Perform segment-level and historical analysis to identify likely drivers.\n4. Assess whether the issue is caused by data, population, business strategy, implementation, or model deterioration.\n5. Document immediate controls and recommended remediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.",
+        "odel-risk decisions must be documented and approved by the designated governance forum or authority.\n\n## Change management\nMaterial changes to model methodology, features, segmentation, calibration, implementation, or approved use must be assessed for validation impact before production release.\n\n## Monitoring governance\nMonitoring evidence must be reproducible and retained. RED breaches cannot be closed solely through management commentary; supporting analysis and an approved disposition are required."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "escalation_procedure.md",
+        "model_governance_policy.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9000305987028097,
+        "llm_context_precision_with_reference": 0.9999999999666667,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly states that RED breaches cannot be closed solely with management commentary and details the additional required steps, aligning fully with the reference."
+      }
+    },
+    {
+      "question": "What decisions is an automated monitoring system prohibited from approving independently?",
+      "reference": "Automation may calculate, retrieve, classify and recommend, but may not independently approve material model changes or risk acceptance",
+      "answer": "The policy forbids an automated monitoring system from independently approving:\n- material model changes,\n- risk acceptance,\n- production limit strategy changes (or otherwise autonomously altering limits/other material actions that affect customer exposure).\n\nSuch material actions require approved decision rules, human governance, supporting analysis, and an approved disposition.",
+      "contexts": [
+        "solely through management commentary; supporting analysis and an approved disposition are required.\n\n## Automation controls\nAutomated monitoring systems may calculate metrics, retrieve policy, classify deterministic thresholds, and prepare recommendations. They must not independently approve material model changes or risk acceptance.",
+        "bility rules can materially change the monitored population even when the model itself is unchanged.\n\n## Escalation\nAny RED metric requires escalation under the enterprise Monitoring Policy. Two or more AMBER metrics require investigation and documented commentary.\n\n## Governance\nLimit changes affecting customer exposure are material actions and require approved decision rules and human governance. The monitoring system may recommend investigation but may not autonomously alter production limit strategy.",
+        "# Model Monitoring Decision Policy\n\n## Purpose\n\nThis policy converts the monitoring classifications for one model and one monitoring period into a deterministic action.\n\n## Valid inputs\n\nEach monitored metric must have exactly one status: `GREEN`, `AMBER`, or `RED`.\n\nThe decision uses:\n\n- `red_count`: number of metrics classified as `RED`.\n- `amber_count`: number of metrics classified as `AMBER`.\n\n## Decision rules\n\nRules are evaluated in the following order. The first matching rule determines the action."
+      ],
+      "sources": [
+        "model_governance_policy.md",
+        "credit_limit_model_monitoring.md",
+        "model_monitoring_policy.md"
+      ],
+      "risk_level": "CRITICAL",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 0.75,
+        "answer_relevancy": 0.8530497835433597,
+        "llm_context_precision_with_reference": 0.99999999995,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 4,
+        "reason": "The candidate correctly identifies that an automated monitoring system is prohibited from independently approving material model changes and risk acceptance, consistent with the reference. However, the candidate adds 'production limit strategy changes (or otherwise autonomously altering limits/other material actions that affect customer exposure),' which is not mentioned in the reference. Despite this addition, the core prohibitions match the reference, so the answer is mostly correct but includes extra information not in the source."
+      }
+    },
+    {
+      "question": "Which segments must supplement overall PSI review for the application scorecard?",
+      "reference": "Segment PSI for acquisition channel, geography, New-to-Credit status, and major policy segments",
+      "answer": "Acquisition channel, geography, New-to-Credit status, and major policy segments.",
+      "contexts": [
+        "# Application Scorecard Monitoring Standard\n\n## Scope\nThis standard applies to application probability-of-default scorecards used for retail underwriting decisions.\n\n## Required monitoring\nReview monthly population stability, AUC/Gini, bad rate, approval rate, missing values, score distribution, channel mix, and New-to-Credit performance.\n\n## Population stability\nOverall PSI must be supplemented by segment PSI for acquisition channel, geography, New-to-Credit status, and major policy segments. A RED overall PSI should not automatically be interpreted as model deterioration; the analyst must identify which segments contributed to the shift.",
+        "un to shift toward New-to-Credit applicants, creating sensitivity in PSI and approval-rate measures.\n\n## Monitoring recommendation\nMonthly PSI and segment-level PSI must be reviewed. A RED PSI breach must be escalated in accordance with the Monitoring Escalation Procedure. If the New-to-Credit segment is the primary driver, management must quantify the segment contribution before concluding that the model itself has deteriorated.\n\n## Open limitation\nThe model has limited historical depth for recently introduced acquisition channels. Monitoring commentary should distinguish channel-mix change from model-performance change.",
+        "# Behaviour Scorecard Monitoring Standard\n\n## Scope\nThis standard applies to behavioural risk models used for existing-customer account management.\n\n## Required monitoring\nReview PSI, AUC/Gini, delinquency migration, utilization, payment behaviour, limit changes, missing values, and performance by account-age and risk-band segments.\n\n## Stability interpretation\nA material PSI shift must be investigated for changes in utilization, payment patterns, account tenure, hardship programmes, and portfolio strategy. Segment analysis is required before attributing a shift to model deterioration."
+      ],
+      "sources": [
+        "application_scorecard_monitoring.md",
+        "previous_validation_report.md",
+        "behaviour_scorecard_monitoring.md"
+      ],
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.42363390959808284,
+        "llm_context_precision_with_reference": 0.99999999995,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate answer exactly matches the reference in content and meaning, listing the same segments that must supplement the overall PSI review for the application scorecard."
+      }
+    },
+    {
+      "question": "Does a RED overall PSI for the application scorecard automatically prove model deterioration?",
+      "reference": "No; identify contributing segments and distinguish population or strategy shifts from model deterioration",
+      "answer": "No. Per the policy, a RED overall PSI triggers escalation to the model owner and MRM and requires the monitoring analyst to investigate segment PSI and identify whether the shift is due to business mix, data changes, strategy changes, or potential model deterioration. A RED overall PSI should not automatically be interpreted as model deterioration.",
+      "contexts": [
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "# Model Performance Monitoring Policy\n\n## Purpose\nThis policy defines the minimum monitoring requirements for production credit-risk and decision models.\n\n## Core metrics\nModels must be reviewed for population stability, discriminatory performance, outcome movement, approval-rate movement, missing-data changes, and material segment deterioration.\n\n## PSI thresholds\nPopulation Stability Index (PSI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.",
+        "# Application Scorecard Monitoring Standard\n\n## Scope\nThis standard applies to application probability-of-default scorecards used for retail underwriting decisions.\n\n## Required monitoring\nReview monthly population stability, AUC/Gini, bad rate, approval rate, missing values, score distribution, channel mix, and New-to-Credit performance.\n\n## Population stability\nOverall PSI must be supplemented by segment PSI for acquisition channel, geography, New-to-Credit status, and major policy segments. A RED overall PSI should not automatically be interpreted as model deterioration; the analyst must identify which segments contributed to the shift."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "monitoring_policy.md",
+        "application_scorecard_monitoring.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.854822216863159,
+        "llm_context_precision_with_reference": 0.9999999999666667,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly states that a RED overall PSI does not automatically prove model deterioration and emphasizes the need to investigate contributing segments and potential causes, aligning fully with the reference."
+      }
+    },
+    {
+      "question": "What prior validation concern was identified for APP_PD_001?",
+      "reference": "Population mix shifting toward New-to-Credit applicants and limited historical depth for recent acquisition channels",
+      "answer": "The prior validation flagged a shift in population mix toward New\u2011to\u2011Credit applicants, which made PSI and approval\u2011rate measures sensitive \u2014 leading to a requirement for enhanced monitoring of population stability and the New\u2011to\u2011Credit segment.",
+      "contexts": [
+        "# Previous Validation Report \u2014 Application Scorecard APP_PD_001\n\n## Conclusion\nThe model was validated as fit for continued use subject to enhanced monitoring of population stability and the New-to-Credit segment.\n\n## Key findings\nOverall discriminatory performance remained acceptable at validation. Population mix had begun to shift toward New-to-Credit applicants, creating sensitivity in PSI and approval-rate measures.",
+        "threshold breaches, business changes, overrides, known limitations, and previous remediation items.\n\n## Challenge expectations\nValidation must independently challenge the monitoring methodology, threshold rationale, root-cause conclusions, and management actions. Aggregate performance alone is not sufficient where critical segments show material deterioration.\n\n## Closure\nA validation issue may be closed only when evidence demonstrates that the root cause has been addressed or the residual risk has been formally accepted by the appropriate governance authority.",
+        "# Model Validation Policy\n\n## Purpose\nIndependent validation must assess whether a model remains fit for its approved use and whether monitoring evidence supports continued reliance on the model.\n\n## Validation triggers\nTargeted revalidation is required when there is sustained RED performance deterioration, a material change in model design or data, a significant change in use, repeated unresolved monitoring issues, or a material control failure.\n\n## Monitoring evidence\nValidators must review current and historical performance, critical segments, data-quality exceptions, threshold breaches, business changes, overrides, known limitations, and previous remediation items."
+      ],
+      "sources": [
+        "previous_validation_report.md",
+        "validation_policy.md",
+        "validation_policy.md"
+      ],
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.3535707300435595,
+        "llm_context_precision_with_reference": 0.9999999999,
+        "context_recall": 0.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly identifies the key concern of a shift in population mix toward New-to-Credit applicants and its impact on validation metrics, aligning well with the reference."
+      }
+    },
+    {
+      "question": "When did the previous validation report say targeted revalidation should be considered for persistent AUC deterioration?",
+      "reference": "Consider targeted revalidation if RED AUC deterioration persists for two consecutive monitoring periods",
+      "answer": "It said to consider targeted revalidation if RED AUC deterioration persists for two consecutive monitoring periods.",
+      "contexts": [
+        "channels. Monitoring commentary should distinguish channel-mix change from model-performance change.\n\n## Follow-up\nTargeted revalidation should be considered if RED AUC deterioration persists for two consecutive monitoring periods or if a material data/implementation issue is identified.",
+        "# Model Validation Policy\n\n## Purpose\nIndependent validation must assess whether a model remains fit for its approved use and whether monitoring evidence supports continued reliance on the model.\n\n## Validation triggers\nTargeted revalidation is required when there is sustained RED performance deterioration, a material change in model design or data, a significant change in use, repeated unresolved monitoring issues, or a material control failure.\n\n## Monitoring evidence\nValidators must review current and historical performance, critical segments, data-quality exceptions, threshold breaches, business changes, overrides, known limitations, and previous remediation items.",
+        "# Previous Validation Report \u2014 Application Scorecard APP_PD_001\n\n## Conclusion\nThe model was validated as fit for continued use subject to enhanced monitoring of population stability and the New-to-Credit segment.\n\n## Key findings\nOverall discriminatory performance remained acceptable at validation. Population mix had begun to shift toward New-to-Credit applicants, creating sensitivity in PSI and approval-rate measures."
+      ],
+      "sources": [
+        "previous_validation_report.md",
+        "validation_policy.md",
+        "previous_validation_report.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.7825569895230773,
+        "llm_context_precision_with_reference": 0.99999999995,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate's answer matches the reference exactly in meaning and detail, stating the same condition for considering targeted revalidation."
+      }
+    },
+    {
+      "question": "Which drivers should be investigated when a behaviour scorecard shows a material PSI shift?",
+      "reference": "Investigate utilization, payment patterns, account tenure, hardship programmes, and portfolio strategy",
+      "answer": "Investigate changes in:\n- utilization\n- payment patterns\n- account tenure\n- hardship programmes\n- portfolio strategy\n\nAlso perform segment analysis (e.g., account-age and risk-band) and check for:\n- business\u2011mix changes\n- data changes (including missing values)\n- strategy/limit changes\n- delinquency migration\n- potential model deterioration",
+      "contexts": [
+        "# Behaviour Scorecard Monitoring Standard\n\n## Scope\nThis standard applies to behavioural risk models used for existing-customer account management.\n\n## Required monitoring\nReview PSI, AUC/Gini, delinquency migration, utilization, payment behaviour, limit changes, missing values, and performance by account-age and risk-band segments.\n\n## Stability interpretation\nA material PSI shift must be investigated for changes in utilization, payment patterns, account tenure, hardship programmes, and portfolio strategy. Segment analysis is required before attributing a shift to model deterioration.",
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "mediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.\n\n## PSI example\nWhen PSI is 0.25 or higher, the PSI status is RED. The required action is escalation to the model owner and MRM, followed by investigation of the population segments driving the shift.\n\n## Human decision\nThe monitoring process may recommend actions, but material remediation decisions such as model recalibration, cutoff changes, redevelopment, or model suspension require authorized human approval."
+      ],
+      "sources": [
+        "behaviour_scorecard_monitoring.md",
+        "monitoring_policy.md",
+        "escalation_procedure.md"
+      ],
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.45924891010902624,
+        "llm_context_precision_with_reference": 0.9999999999,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate fully covers all the key drivers mentioned in the reference and adds additional relevant factors typically considered in such analyses, providing a comprehensive and accurate answer."
+      }
+    },
+    {
+      "question": "For a behaviour scorecard, what should happen if two metrics are AMBER and none is RED?",
+      "reference": "Two or more AMBER metrics require documented investigation even without a RED metric",
+      "answer": "The policy requires a mandatory investigation and documented management commentary. Specifically:\n\n- Open an investigation into the two AMBER breaches (investigation is mandatory when two or more metrics are AMBER in the same monitoring period).  \n- Record the monitoring conclusion fields: metric values, thresholds used, monitoring period, affected model, source data, and reviewer.  \n- Document management commentary on findings and likely drivers.  \n- Assess material changes in collection/business strategy as a possible driver before concluding model deterioration.\n\nNote: escalation is required for any RED metric; the policy does not require escalation solely for two AMBERs.",
+      "contexts": [
+        "ified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.\n\n## Overall action rule\nAny RED monitoring breach requires escalation. Two or more AMBER breaches in the same monitoring period require investigation and documented management commentary.\n\n## Evidence\nEvery monitoring conclusion must record the metric value, threshold used, monitoring period, affected model, source data, and reviewer.",
+        "gation is mandatory when two or more metrics are classified AMBER during the same monitoring period.\n\n## Required steps for RED\n1. Record the breached metric, observed value, threshold, model, and monitoring period.\n2. Notify the model owner and Model Risk Management.\n3. Perform segment-level and historical analysis to identify likely drivers.\n4. Assess whether the issue is caused by data, population, business strategy, implementation, or model deterioration.\n5. Document immediate controls and recommended remediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.",
+        "eatment strategy because aggregate results can hide deterioration in high-risk collections segments.\n\n## Escalation\nAny RED metric requires escalation. Two or more AMBER metrics require investigation. Material changes in collection strategy must be assessed as a possible driver before concluding model deterioration.\n\n## Governance\nAutomated recommendations must not independently change customer treatment strategies without authorized human approval."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "escalation_procedure.md",
+        "collections_model_monitoring.md"
+      ],
+      "risk_level": "MEDIUM",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 0.8823529411764706,
+        "answer_relevancy": 0.46989381707563777,
+        "llm_context_precision_with_reference": 0.9999999999666667,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate accurately states that two or more AMBER metrics require a documented investigation even without a RED metric, matching the reference. The candidate provides detailed steps for conducting the investigation and documentation, and correctly notes that escalation is not required solely for two AMBER metrics. The answer fully aligns with the reference."
+      }
+    },
+    {
+      "question": "What performance measures should be reviewed for a collections model?",
+      "reference": "PSI, rank ordering, cure rate, roll rate, contactability, treatment mix, promise-to-pay outcomes, and delinquency-bucket performance",
+      "answer": "From the policy context, review the following for a collections model:\n\n- Population Stability (PSI)  \n- Rank-ordering / discriminatory performance  \n- Cure rate  \n- Roll rate  \n- Contactability  \n- Treatment mix  \n- Promise-to-pay outcomes  \n- Performance by delinquency bucket  \n\nAdditionally, per the general model policy, also monitor outcome movement, approval-rate movement, missing-data changes, and material segment deterioration.",
+      "contexts": [
+        "# Collections Model Monitoring Standard\n\n## Scope\nThis standard applies to models used to prioritize delinquent accounts or select collection treatment.\n\n## Required monitoring\nReview PSI, rank-ordering performance, cure rate, roll rate, contactability, treatment mix, promise-to-pay outcomes, and performance by delinquency bucket.\n\n## Risk considerations\nPerformance must be checked by delinquency stage and treatment strategy because aggregate results can hide deterioration in high-risk collections segments.",
+        "eatment strategy because aggregate results can hide deterioration in high-risk collections segments.\n\n## Escalation\nAny RED metric requires escalation. Two or more AMBER metrics require investigation. Material changes in collection strategy must be assessed as a possible driver before concluding model deterioration.\n\n## Governance\nAutomated recommendations must not independently change customer treatment strategies without authorized human approval.",
+        "# Model Performance Monitoring Policy\n\n## Purpose\nThis policy defines the minimum monitoring requirements for production credit-risk and decision models.\n\n## Core metrics\nModels must be reviewed for population stability, discriminatory performance, outcome movement, approval-rate movement, missing-data changes, and material segment deterioration.\n\n## PSI thresholds\nPopulation Stability Index (PSI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED."
+      ],
+      "sources": [
+        "collections_model_monitoring.md",
+        "collections_model_monitoring.md",
+        "monitoring_policy.md"
+      ],
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.7371599845924338,
+        "llm_context_precision_with_reference": 0.9999999999,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 4,
+        "reason": "The candidate includes all the key performance measures from the reference (PSI, rank ordering, cure rate, roll rate, contactability, treatment mix, promise-to-pay outcomes, delinquency-bucket performance) and elaborates on additional relevant metrics. However, the additional metrics are not mentioned in the reference, which while helpful, does not contribute to full alignment. The presence of all core measures and correct terminology warrants a high score."
+      }
+    },
+    {
+      "question": "May an automated collections monitoring recommendation directly change customer treatment strategy?",
+      "reference": "No; changes to customer treatment strategies require authorized human approval",
+      "answer": "No. The policy states automated recommendations must not independently change customer treatment strategies; they can prepare recommendations but any change requires authorized human approval.",
+      "contexts": [
+        "eatment strategy because aggregate results can hide deterioration in high-risk collections segments.\n\n## Escalation\nAny RED metric requires escalation. Two or more AMBER metrics require investigation. Material changes in collection strategy must be assessed as a possible driver before concluding model deterioration.\n\n## Governance\nAutomated recommendations must not independently change customer treatment strategies without authorized human approval.",
+        "# Collections Model Monitoring Standard\n\n## Scope\nThis standard applies to models used to prioritize delinquent accounts or select collection treatment.\n\n## Required monitoring\nReview PSI, rank-ordering performance, cure rate, roll rate, contactability, treatment mix, promise-to-pay outcomes, and performance by delinquency bucket.\n\n## Risk considerations\nPerformance must be checked by delinquency stage and treatment strategy because aggregate results can hide deterioration in high-risk collections segments.",
+        "solely through management commentary; supporting analysis and an approved disposition are required.\n\n## Automation controls\nAutomated monitoring systems may calculate metrics, retrieve policy, classify deterministic thresholds, and prepare recommendations. They must not independently approve material model changes or risk acceptance."
+      ],
+      "sources": [
+        "collections_model_monitoring.md",
+        "collections_model_monitoring.md",
+        "model_governance_policy.md"
+      ],
+      "risk_level": "CRITICAL",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.7642081257862766,
+        "llm_context_precision_with_reference": 0.8333333332916666,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate's answer fully aligns with the reference, clearly stating that automated recommendations cannot independently change customer treatment strategies and that authorized human approval is required."
+      }
+    },
+    {
+      "question": "What special condition requires investigation for a fraud model even when aggregate fraud capture remains stable?",
+      "reference": "A material increase in false positives affecting legitimate customers must be investigated",
+      "answer": "A material increase in false positives affecting legitimate customers.",
+      "contexts": [
+        "# Fraud Model Monitoring Standard\n\n## Scope\nThis standard applies to fraud-detection and fraud-prioritization models.\n\n## Required monitoring\nReview score distribution, PSI, precision, recall, false-positive rate, fraud capture, alert volume, investigation conversion, and performance by channel and fraud typology.\n\n## Risk considerations\nFraud patterns can change quickly. A stable aggregate metric does not remove the need to review newly emerging fraud types and channel-level deterioration.",
+        "etric does not remove the need to review newly emerging fraud types and channel-level deterioration.\n\n## Escalation\nAny RED monitoring breach requires escalation. A material increase in false positives affecting legitimate customers must also be investigated even where aggregate fraud capture remains stable.\n\n## Response\nMonitoring actions may recommend threshold review, feature investigation, or targeted revalidation, but production threshold changes require authorized approval.",
+        "eatment strategy because aggregate results can hide deterioration in high-risk collections segments.\n\n## Escalation\nAny RED metric requires escalation. Two or more AMBER metrics require investigation. Material changes in collection strategy must be assessed as a possible driver before concluding model deterioration.\n\n## Governance\nAutomated recommendations must not independently change customer treatment strategies without authorized human approval."
+      ],
+      "sources": [
+        "fraud_model_monitoring.md",
+        "fraud_model_monitoring.md",
+        "collections_model_monitoring.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.24441928879578692,
+        "llm_context_precision_with_reference": 0.99999999995,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate answer correctly identifies the special condition (a material increase in false positives affecting legitimate customers) that requires investigation, matching the reference exactly in meaning and detail."
+      }
+    },
+    {
+      "question": "Which metrics are specifically required for fraud-model monitoring?",
+      "reference": "Score distribution, PSI, precision, recall, false-positive rate, fraud capture, alert volume, investigation conversion, and channel or fraud-typology performance",
+      "answer": "The policy requires monitoring of: score distribution, PSI, precision, recall, false-positive rate, fraud capture, alert volume, investigation conversion, and performance by channel and by fraud typology.",
+      "contexts": [
+        "# Fraud Model Monitoring Standard\n\n## Scope\nThis standard applies to fraud-detection and fraud-prioritization models.\n\n## Required monitoring\nReview score distribution, PSI, precision, recall, false-positive rate, fraud capture, alert volume, investigation conversion, and performance by channel and fraud typology.\n\n## Risk considerations\nFraud patterns can change quickly. A stable aggregate metric does not remove the need to review newly emerging fraud types and channel-level deterioration.",
+        "etric does not remove the need to review newly emerging fraud types and channel-level deterioration.\n\n## Escalation\nAny RED monitoring breach requires escalation. A material increase in false positives affecting legitimate customers must also be investigated even where aggregate fraud capture remains stable.\n\n## Response\nMonitoring actions may recommend threshold review, feature investigation, or targeted revalidation, but production threshold changes require authorized approval.",
+        "# Model Performance Monitoring Policy\n\n## Purpose\nThis policy defines the minimum monitoring requirements for production credit-risk and decision models.\n\n## Core metrics\nModels must be reviewed for population stability, discriminatory performance, outcome movement, approval-rate movement, missing-data changes, and material segment deterioration.\n\n## PSI thresholds\nPopulation Stability Index (PSI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED."
+      ],
+      "sources": [
+        "fraud_model_monitoring.md",
+        "fraud_model_monitoring.md",
+        "monitoring_policy.md"
+      ],
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.6377913904266135,
+        "llm_context_precision_with_reference": 0.9999999999,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate's answer lists all the metrics mentioned in the reference with equivalent wording, accurately covering the required fraud-model monitoring metrics."
+      }
+    },
+    {
+      "question": "Can the monitoring system autonomously alter a production credit-limit strategy?",
+      "reference": "No; customer exposure changes require approved decision rules and human governance",
+      "answer": "No. The policy says the monitoring system may recommend investigation but \"may not autonomously alter production limit strategy.\" Limit changes that affect customer exposure are material and \"require approved decision rules and human governance,\" and automation \"must not independently approve material model changes or risk acceptance.\"",
+      "contexts": [
+        "bility rules can materially change the monitored population even when the model itself is unchanged.\n\n## Escalation\nAny RED metric requires escalation under the enterprise Monitoring Policy. Two or more AMBER metrics require investigation and documented commentary.\n\n## Governance\nLimit changes affecting customer exposure are material actions and require approved decision rules and human governance. The monitoring system may recommend investigation but may not autonomously alter production limit strategy.",
+        "# Credit Limit Model Monitoring Standard\n\n## Scope\nThis standard applies to models supporting credit-line increase, decrease, or limit-management decisions.\n\n## Required monitoring\nReview PSI, AUC/Gini where applicable, utilization, delinquency after limit action, exposure movement, acceptance rate, override rate, and performance by risk tier.\n\n## Stability interpretation\nPopulation stability must be reviewed alongside strategy changes because eligibility rules can materially change the monitored population even when the model itself is unchanged.",
+        "solely through management commentary; supporting analysis and an approved disposition are required.\n\n## Automation controls\nAutomated monitoring systems may calculate metrics, retrieve policy, classify deterministic thresholds, and prepare recommendations. They must not independently approve material model changes or risk acceptance."
+      ],
+      "sources": [
+        "credit_limit_model_monitoring.md",
+        "credit_limit_model_monitoring.md",
+        "model_governance_policy.md"
+      ],
+      "risk_level": "CRITICAL",
+      "difficulty": "EASY",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8590879575539195,
+        "llm_context_precision_with_reference": 0.9999999999666667,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate's answer fully matches the reference, stating that the monitoring system cannot autonomously alter the production credit-limit strategy and emphasizing the need for human governance and approved decision rules."
+      }
+    },
+    {
+      "question": "Enterprise policy says RED PSI requires escalation, while the application standard says RED PSI does not automatically mean model deterioration. What evidence should be retrieved to support both statements?",
+      "reference": "Apply enterprise escalation for RED metrics, but perform segment analysis before concluding model deterioration",
+      "answer": "Policy-directed evidence to retrieve\n\n1) To justify escalation (enterprise policy that any RED metric requires escalation)\n- The PSI value showing PSI >= 0.25 (RED).\n- Documentation that the enterprise Monitoring Policy and Escalation Procedure was applied (escalation to model owner and MRM).\n- The documented investigation of the population segments driving the shift (per the requirement to investigate and document segments).\n\n2) To justify that RED PSI does not automatically mean model deterioration (application standard)\n- Segment\u2011level analysis showing which population segments contributed to the PSI movement.\n- Documentation assessing causes of the movement: business mix changes, data changes, strategy changes, or potential model deterioration (explicitly required to be determined and documented).\n- Monitoring commentary distinguishing model\u2011performance change from population\u2011mix, underwriting\u2011policy, and acquisition\u2011channel changes.\n- Current vs approved baseline AUC (and the AUC deterioration classification) to demonstrate whether model performance has materially deteriorated per the AUC thresholds.\n- Any conclusions about need for targeted revalidation or increased monitoring frequency.\n\nIf you need these items listed as specific files/queries to pull, say so.",
+      "contexts": [
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "mediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.\n\n## PSI example\nWhen PSI is 0.25 or higher, the PSI status is RED. The required action is escalation to the model owner and MRM, followed by investigation of the population segments driving the shift.\n\n## Human decision\nThe monitoring process may recommend actions, but material remediation decisions such as model recalibration, cutoff changes, redevelopment, or model suspension require authorized human approval.",
+        "terpreted as model deterioration; the analyst must identify which segments contributed to the shift.\n\n## Escalation\nApply the enterprise Monitoring Policy and Escalation Procedure. Any RED metric requires escalation and documented investigation.\n\n## Commentary expectation\nMonitoring commentary should distinguish model-performance change from population-mix, underwriting-policy, and acquisition-channel changes."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "escalation_procedure.md",
+        "application_scorecard_monitoring.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "HARD",
+      "ragas": {
+        "faithfulness": 0.9375,
+        "answer_relevancy": 0.8480336684387585,
+        "llm_context_precision_with_reference": 0.9999999999666667,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate fully addresses the question by specifying the exact evidence needed to support both the enterprise policy and the application standard statements. It details the PSI value, documentation of escalation procedures, investigation of population segments for enterprise policy, and segment-level analysis, documentation of causes, performance metrics, and conclusions for the application standard. The response matches the reference in completeness and correctness."
+      }
+    },
+    {
+      "question": "A previous validation report refers to two consecutive RED AUC periods. Which enterprise document defines the broader set of targeted revalidation triggers?",
+      "reference": "Enterprise targeted revalidation triggers extend beyond persistent AUC deterioration to model, data, use, issue, and control changes",
+      "answer": "The Model Validation Policy. It defines the broader set of targeted revalidation triggers (e.g., sustained RED performance deterioration, material changes in model design or data, significant change in use, repeated unresolved monitoring issues, or a material control failure).",
+      "contexts": [
+        "channels. Monitoring commentary should distinguish channel-mix change from model-performance change.\n\n## Follow-up\nTargeted revalidation should be considered if RED AUC deterioration persists for two consecutive monitoring periods or if a material data/implementation issue is identified.",
+        "# Model Validation Policy\n\n## Purpose\nIndependent validation must assess whether a model remains fit for its approved use and whether monitoring evidence supports continued reliance on the model.\n\n## Validation triggers\nTargeted revalidation is required when there is sustained RED performance deterioration, a material change in model design or data, a significant change in use, repeated unresolved monitoring issues, or a material control failure.\n\n## Monitoring evidence\nValidators must review current and historical performance, critical segments, data-quality exceptions, threshold breaches, business changes, overrides, known limitations, and previous remediation items.",
+        "threshold breaches, business changes, overrides, known limitations, and previous remediation items.\n\n## Challenge expectations\nValidation must independently challenge the monitoring methodology, threshold rationale, root-cause conclusions, and management actions. Aggregate performance alone is not sufficient where critical segments show material deterioration.\n\n## Closure\nA validation issue may be closed only when evidence demonstrates that the root cause has been addressed or the residual risk has been formally accepted by the appropriate governance authority."
+      ],
+      "sources": [
+        "previous_validation_report.md",
+        "validation_policy.md",
+        "validation_policy.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "HARD",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.3838486273514885,
+        "llm_context_precision_with_reference": 0.99999999995,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly identifies 'The Model Validation Policy' as the enterprise document and accurately describes the broader set of targeted revalidation triggers, matching the reference's information."
+      }
+    },
+    {
+      "question": "Within how many business days must a RED PSI breach be escalated?",
+      "reference": "UNANSWERABLE: the current policy corpus requires escalation but does not specify a business-day deadline",
+      "answer": "The provided policy context does not specify within how many business days a RED PSI breach must be escalated.",
+      "contexts": [
+        "SI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.\n\nA RED PSI breach requires escalation to the model owner and Model Risk Management (MRM). The monitoring analyst must investigate the main population segments contributing to the shift and document whether the movement is caused by business mix, data changes, strategy changes, or potential model deterioration.\n\n## AUC thresholds\nAUC deterioration from the approved baseline is classified as:\n\n- decrease < 0.03: GREEN.\n- decrease from 0.03 to < 0.05: AMBER.\n- decrease >= 0.05: RED.",
+        "mediation.\n6. Determine whether targeted revalidation or increased monitoring frequency is required.\n\n## PSI example\nWhen PSI is 0.25 or higher, the PSI status is RED. The required action is escalation to the model owner and MRM, followed by investigation of the population segments driving the shift.\n\n## Human decision\nThe monitoring process may recommend actions, but material remediation decisions such as model recalibration, cutoff changes, redevelopment, or model suspension require authorized human approval.",
+        "# Monitoring Escalation Procedure\n\n## Trigger\nEscalation is mandatory when any monitoring metric is classified RED. Investigation is mandatory when two or more metrics are classified AMBER during the same monitoring period."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "escalation_procedure.md",
+        "escalation_procedure.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "HARD",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.0,
+        "llm_context_precision_with_reference": 0.9999999999666667,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly identifies that the policy does not specify a business-day deadline for escalation, aligning perfectly with the UNANSWERABLE reference."
+      }
+    },
+    {
+      "question": "What numerical fairness-disparity threshold causes a model monitoring breach?",
+      "reference": "UNANSWERABLE: the current policy corpus does not define a numerical fairness-disparity threshold",
+      "answer": "The supplied policy does not specify any numerical fairness\u2011disparity threshold that would constitute a monitoring breach.",
+      "contexts": [
+        "# Model Performance Monitoring Policy\n\n## Purpose\nThis policy defines the minimum monitoring requirements for production credit-risk and decision models.\n\n## Core metrics\nModels must be reviewed for population stability, discriminatory performance, outcome movement, approval-rate movement, missing-data changes, and material segment deterioration.\n\n## PSI thresholds\nPopulation Stability Index (PSI) is classified as follows:\n\n- PSI < 0.10: GREEN.\n- 0.10 <= PSI < 0.25: AMBER.\n- PSI >= 0.25: RED.",
+        "# Initial Monitoring Thresholds\n\nThese provisional rules give the project a transparent policy baseline and are implemented by the deterministic monitoring application.\n\n| Metric | Green | Amber | Red |\n|---|---|---|---|\n| PSI | `<= 0.10` | `> 0.10 to <= 0.25` | `> 0.25` |\n| AUC deterioration from previous period | `<= 0.03` | `> 0.03 to <= 0.05` | `> 0.05` |\n| Bad-rate relative increase | `< 10%` | `10% to < 20%` | `>= 20%` |\n| Approval-rate absolute change | `< 0.03` | `0.03 to < 0.05` | `>= 0.05` |\n\nThresholds must be reviewed and approved by Model Risk Management and the model owner before production use.",
+        "# Fraud Model Monitoring Standard\n\n## Scope\nThis standard applies to fraud-detection and fraud-prioritization models.\n\n## Required monitoring\nReview score distribution, PSI, precision, recall, false-positive rate, fraud capture, alert volume, investigation conversion, and performance by channel and fraud typology.\n\n## Risk considerations\nFraud patterns can change quickly. A stable aggregate metric does not remove the need to review newly emerging fraud types and channel-level deterioration."
+      ],
+      "sources": [
+        "monitoring_policy.md",
+        "monitoring_thresholds_v2.md",
+        "fraud_model_monitoring.md"
+      ],
+      "risk_level": "HIGH",
+      "difficulty": "HARD",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.7415054184710986,
+        "llm_context_precision_with_reference": 0.99999999995,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly states that the policy does not specify any numerical fairness-disparity threshold, aligning perfectly with the UNANSWERABLE reference."
+      }
+    },
+    {
+      "question": "How many governance committee members must approve suspension of a model?",
+      "reference": "UNANSWERABLE: the current policy corpus requires authorized governance approval but does not define a committee quorum",
+      "answer": "The provided policy corpus does not specify how many governance committee members must approve suspension of a model. It only states material model-risk decisions must be documented and approved by the designated governance forum or authority.",
+      "contexts": [
+        "# Model Governance Policy\n\n## Governance requirements\nEvery production model must have an approved owner, documented purpose, risk tier, monitoring frequency, validation status, known limitations, approved thresholds, and escalation route.\n\n## Accountability\nThe model owner is accountable for first-line monitoring and remediation. Model Risk Management provides independent challenge and validation. Material model-risk decisions must be documented and approved by the designated governance forum or authority.",
+        "odel-risk decisions must be documented and approved by the designated governance forum or authority.\n\n## Change management\nMaterial changes to model methodology, features, segmentation, calibration, implementation, or approved use must be assessed for validation impact before production release.\n\n## Monitoring governance\nMonitoring evidence must be reproducible and retained. RED breaches cannot be closed solely through management commentary; supporting analysis and an approved disposition are required.",
+        "bility rules can materially change the monitored population even when the model itself is unchanged.\n\n## Escalation\nAny RED metric requires escalation under the enterprise Monitoring Policy. Two or more AMBER metrics require investigation and documented commentary.\n\n## Governance\nLimit changes affecting customer exposure are material actions and require approved decision rules and human governance. The monitoring system may recommend investigation but may not autonomously alter production limit strategy."
+      ],
+      "sources": [
+        "model_governance_policy.md",
+        "model_governance_policy.md",
+        "credit_limit_model_monitoring.md"
+      ],
+      "risk_level": "CRITICAL",
+      "difficulty": "HARD",
+      "ragas": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.0,
+        "llm_context_precision_with_reference": 0.8333333332916666,
+        "context_recall": 1.0
+      },
+      "llm_judge": {
+        "score": 5,
+        "reason": "The candidate correctly identifies that the policy corpus does not specify the number of governance committee members required for suspension approval, aligning with the reference that states the information is unanswerable and no quorum is defined."
+      }
+    }
+  ],
+  "metrics": {
+    "ragas": {
+      "answer_relevancy": 0.6124980371370611,
+      "context_recall": 0.9666666666666667,
+      "faithfulness": 0.9618522408963586,
+      "llm_context_precision_with_reference": 0.9555555555055555
+    },
+    "llm_judge_mean": 4.9
+  }
+}
