@@ -24,3 +24,23 @@ uv sync
 git branch
 git switch main
 git add .
+git commit -m "unifying rag/answering"
+uv sync
+uv init
+uv sync
+uv add ragas
+clear
+python evals/evaluate_generation.py --backend hash --output .rag/generation_hash.json
+pip show ragas
+uv pip show ragas
+uv run python evals/evaluate_generation.py --backend hash --output .rag/generation_hash.json
+clear
+uv run evals/evaluate_generation.py --backend hash --output .rag/generation_hash.json
+clear
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\python.exe c:/Users/Makarand/Documents/model-monitoring-agent/evals/evaluate_generation.py
+clear
+python evals/evaluate_retrieval.py --backend hash --output .rag/retrieval_hash.json
+uv run  evals/evaluate_retrieval.py --backend hash --output .rag/retrieval_hash.json
+uv run  evals/evaluate_retrieval.py --backend openai --output .rag/retrieval_openai.json
+git add .; git commit -m "running evaluators"

@@ -1,0 +1,1068 @@
+{
+  "configuration": {
+    "dataset": "evals\\rag_retrieval_dataset.jsonl",
+    "backend": "hash",
+    "embedding_model": null,
+    "policies_dir": "policies",
+    "top_k": 3,
+    "indexed_chunks": 30,
+    "total_cases": 30,
+    "unanswerable_cases_excluded_from_metrics": 3,
+    "relevance_definition": "a retrieved chunk is relevant when its source equals expected_document"
+  },
+  "cases": [
+    {
+      "question": "What action is required when PSI exceeds 0.25?",
+      "expected_document": "escalation_procedure.md",
+      "risk_level": "HIGH",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "escalation_procedure.md",
+          "chunk_index": 2,
+          "score": 0.3638034375544994
+        },
+        {
+          "rank": 2,
+          "source": "monitoring_policy.md",
+          "chunk_index": 0,
+          "score": 0.29172998299578906
+        },
+        {
+          "rank": 3,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.23985080590006172
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.3333333333333333,
+      "ndcg": 0.46927872602275644
+    },
+    {
+      "question": "How is a PSI of 0.09 classified?",
+      "expected_document": "monitoring_policy.md",
+      "risk_level": "LOW",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.2849014411490949
+        },
+        {
+          "rank": 2,
+          "source": "monitoring_policy.md",
+          "chunk_index": 0,
+          "score": 0.2728884114549076
+        },
+        {
+          "rank": 3,
+          "source": "escalation_procedure.md",
+          "chunk_index": 0,
+          "score": 0.2672612419124244
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.6666666666666666,
+      "context_recall": 0.6666666666666666,
+      "ndcg": 0.7653606369886217
+    },
+    {
+      "question": "How is a PSI of exactly 0.10 classified?",
+      "expected_document": "monitoring_policy.md",
+      "risk_level": "MEDIUM",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "monitoring_policy.md",
+          "chunk_index": 0,
+          "score": 0.3368607684266076
+        },
+        {
+          "rank": 2,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.3077287274483319
+        },
+        {
+          "rank": 3,
+          "source": "escalation_procedure.md",
+          "chunk_index": 2,
+          "score": 0.280056016805602
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.6666666666666666,
+      "context_recall": 0.6666666666666666,
+      "ndcg": 0.7653606369886217
+    },
+    {
+      "question": "How is a PSI of 0.249 classified?",
+      "expected_document": "monitoring_policy.md",
+      "risk_level": "MEDIUM",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.2849014411490949
+        },
+        {
+          "rank": 2,
+          "source": "monitoring_policy.md",
+          "chunk_index": 0,
+          "score": 0.2728884114549076
+        },
+        {
+          "rank": 3,
+          "source": "escalation_procedure.md",
+          "chunk_index": 0,
+          "score": 0.2672612419124244
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.6666666666666666,
+      "context_recall": 0.6666666666666666,
+      "ndcg": 0.7653606369886217
+    },
+    {
+      "question": "How is a PSI of exactly 0.25 classified?",
+      "expected_document": "monitoring_policy.md",
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "monitoring_policy.md",
+          "chunk_index": 0,
+          "score": 0.3368607684266076
+        },
+        {
+          "rank": 2,
+          "source": "escalation_procedure.md",
+          "chunk_index": 2,
+          "score": 0.31506301890630223
+        },
+        {
+          "rank": 3,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.3077287274483319
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.6666666666666666,
+      "context_recall": 0.6666666666666666,
+      "ndcg": 0.7039180890341347
+    },
+    {
+      "question": "How is an AUC deterioration of 0.02 from the approved baseline classified?",
+      "expected_document": "monitoring_policy.md",
+      "risk_level": "LOW",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.43519413988924466
+        },
+        {
+          "rank": 2,
+          "source": "escalation_procedure.md",
+          "chunk_index": 2,
+          "score": 0.27229057431858544
+        },
+        {
+          "rank": 3,
+          "source": "escalation_procedure.md",
+          "chunk_index": 1,
+          "score": 0.25756109818496586
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.3333333333333333,
+      "ndcg": 0.46927872602275644
+    },
+    {
+      "question": "How is an AUC deterioration of 0.04 from the approved baseline classified?",
+      "expected_document": "monitoring_policy.md",
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.41343443289478243
+        },
+        {
+          "rank": 2,
+          "source": "escalation_procedure.md",
+          "chunk_index": 2,
+          "score": 0.27229057431858544
+        },
+        {
+          "rank": 3,
+          "source": "escalation_procedure.md",
+          "chunk_index": 1,
+          "score": 0.25756109818496586
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.3333333333333333,
+      "ndcg": 0.46927872602275644
+    },
+    {
+      "question": "How is an AUC deterioration of exactly 0.05 from the approved baseline classified?",
+      "expected_document": "monitoring_policy.md",
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.4545454545454546
+        },
+        {
+          "rank": 2,
+          "source": "escalation_procedure.md",
+          "chunk_index": 2,
+          "score": 0.2843982294972605
+        },
+        {
+          "rank": 3,
+          "source": "monitoring_thresholds_v2.md",
+          "chunk_index": 0,
+          "score": 0.2843982294972605
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.3333333333333333,
+      "ndcg": 0.46927872602275644
+    },
+    {
+      "question": "What action is required when two monitoring metrics are AMBER in the same monitoring period?",
+      "expected_document": "escalation_procedure.md",
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "escalation_procedure.md",
+          "chunk_index": 0,
+          "score": 0.58309518948453
+        },
+        {
+          "rank": 2,
+          "source": "monitoring_policy.md",
+          "chunk_index": 2,
+          "score": 0.46549615967252395
+        },
+        {
+          "rank": 3,
+          "source": "model_monitoring_policy.md",
+          "chunk_index": 0,
+          "score": 0.4555539614191779
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.3333333333333333,
+      "ndcg": 0.46927872602275644
+    },
+    {
+      "question": "What action is required when any one monitoring metric is classified RED?",
+      "expected_document": "escalation_procedure.md",
+      "risk_level": "HIGH",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "escalation_procedure.md",
+          "chunk_index": 0,
+          "score": 0.5669467095138409
+        },
+        {
+          "rank": 2,
+          "source": "behaviour_scorecard_monitoring.md",
+          "chunk_index": 1,
+          "score": 0.40946151242666284
+        },
+        {
+          "rank": 3,
+          "source": "escalation_procedure.md",
+          "chunk_index": 2,
+          "score": 0.3666793988112845
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.6666666666666666,
+      "context_recall": 0.6666666666666666,
+      "ndcg": 0.7039180890341347
+    },
+    {
+      "question": "What events trigger targeted revalidation?",
+      "expected_document": "validation_policy.md",
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "previous_validation_report.md",
+          "chunk_index": 2,
+          "score": 0.20225995873897262
+        },
+        {
+          "rank": 2,
+          "source": "fraud_model_monitoring.md",
+          "chunk_index": 1,
+          "score": 0.15191090506254998
+        },
+        {
+          "rank": 3,
+          "source": "previous_validation_report.md",
+          "chunk_index": 0,
+          "score": 0.04588314677411235
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 0,
+      "hit_at_3": 0,
+      "reciprocal_rank": 0.0,
+      "context_precision": 0.0,
+      "context_recall": 0.0,
+      "ndcg": 0.0
+    },
+    {
+      "question": "When may a validation issue be closed?",
+      "expected_document": "validation_policy.md",
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "validation_policy.md",
+          "chunk_index": 1,
+          "score": 0.3038948705590345
+        },
+        {
+          "rank": 2,
+          "source": "validation_policy.md",
+          "chunk_index": 0,
+          "score": 0.24445293254085634
+        },
+        {
+          "rank": 3,
+          "source": "model_governance_policy.md",
+          "chunk_index": 1,
+          "score": 0.22237479499833035
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.6666666666666666,
+      "context_recall": 1.0,
+      "ndcg": 1.0
+    },
+    {
+      "question": "Can a RED monitoring breach be closed only with management commentary?",
+      "expected_document": "model_governance_policy.md",
+      "risk_level": "HIGH",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "model_governance_policy.md",
+          "chunk_index": 1,
+          "score": 0.32522181779399545
+        },
+        {
+          "rank": 2,
+          "source": "previous_validation_report.md",
+          "chunk_index": 2,
+          "score": 0.2727272727272727
+        },
+        {
+          "rank": 3,
+          "source": "previous_validation_report.md",
+          "chunk_index": 1,
+          "score": 0.24929278500463514
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.3333333333333333,
+      "ndcg": 0.46927872602275644
+    },
+    {
+      "question": "What decisions is an automated monitoring system prohibited from approving independently?",
+      "expected_document": "model_governance_policy.md",
+      "risk_level": "CRITICAL",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "escalation_procedure.md",
+          "chunk_index": 0,
+          "score": 0.25584085962673253
+        },
+        {
+          "rank": 2,
+          "source": "escalation_procedure.md",
+          "chunk_index": 2,
+          "score": 0.18098069149825669
+        },
+        {
+          "rank": 3,
+          "source": "application_scorecard_monitoring.md",
+          "chunk_index": 1,
+          "score": 0.17644616831014637
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 0,
+      "hit_at_3": 0,
+      "reciprocal_rank": 0.0,
+      "context_precision": 0.0,
+      "context_recall": 0.0,
+      "ndcg": 0.0
+    },
+    {
+      "question": "Which segments must supplement overall PSI review for the application scorecard?",
+      "expected_document": "application_scorecard_monitoring.md",
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "application_scorecard_monitoring.md",
+          "chunk_index": 0,
+          "score": 0.33610699849676245
+        },
+        {
+          "rank": 2,
+          "source": "previous_validation_report.md",
+          "chunk_index": 1,
+          "score": 0.3172817263695356
+        },
+        {
+          "rank": 3,
+          "source": "validation_policy.md",
+          "chunk_index": 1,
+          "score": 0.2727272727272727
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.5,
+      "ndcg": 0.6131471927654584
+    },
+    {
+      "question": "Does a RED overall PSI for the application scorecard automatically prove model deterioration?",
+      "expected_document": "application_scorecard_monitoring.md",
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.39721495475336815
+        },
+        {
+          "rank": 2,
+          "source": "application_scorecard_monitoring.md",
+          "chunk_index": 0,
+          "score": 0.3567386206158705
+        },
+        {
+          "rank": 3,
+          "source": "previous_validation_report.md",
+          "chunk_index": 1,
+          "score": 0.3335505593800666
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 0,
+      "hit_at_3": 1,
+      "reciprocal_rank": 0.5,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.5,
+      "ndcg": 0.38685280723454163
+    },
+    {
+      "question": "What prior validation concern was identified for APP_PD_001?",
+      "expected_document": "previous_validation_report.md",
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "previous_validation_report.md",
+          "chunk_index": 0,
+          "score": 0.4217756949399826
+        },
+        {
+          "rank": 2,
+          "source": "application_scorecard_monitoring.md",
+          "chunk_index": 0,
+          "score": 0.21693045781865616
+        },
+        {
+          "rank": 3,
+          "source": "collections_model_monitoring.md",
+          "chunk_index": 0,
+          "score": 0.12843225981358714
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.3333333333333333,
+      "ndcg": 0.46927872602275644
+    },
+    {
+      "question": "When did the previous validation report say targeted revalidation should be considered for persistent AUC deterioration?",
+      "expected_document": "previous_validation_report.md",
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "previous_validation_report.md",
+          "chunk_index": 2,
+          "score": 0.3392002626499841
+        },
+        {
+          "rank": 2,
+          "source": "previous_validation_report.md",
+          "chunk_index": 0,
+          "score": 0.25649458802128855
+        },
+        {
+          "rank": 3,
+          "source": "validation_policy.md",
+          "chunk_index": 1,
+          "score": 0.251259453814803
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.6666666666666666,
+      "context_recall": 0.6666666666666666,
+      "ndcg": 0.7653606369886217
+    },
+    {
+      "question": "Which drivers should be investigated when a behaviour scorecard shows a material PSI shift?",
+      "expected_document": "behaviour_scorecard_monitoring.md",
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "behaviour_scorecard_monitoring.md",
+          "chunk_index": 0,
+          "score": 0.3263766828841098
+        },
+        {
+          "rank": 2,
+          "source": "previous_validation_report.md",
+          "chunk_index": 2,
+          "score": 0.26382242650554316
+        },
+        {
+          "rank": 3,
+          "source": "application_scorecard_monitoring.md",
+          "chunk_index": 0,
+          "score": 0.25724787771376323
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.5,
+      "ndcg": 0.6131471927654584
+    },
+    {
+      "question": "For a behaviour scorecard, what should happen if two metrics are AMBER and none is RED?",
+      "expected_document": "behaviour_scorecard_monitoring.md",
+      "risk_level": "MEDIUM",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "previous_validation_report.md",
+          "chunk_index": 2,
+          "score": 0.3392002626499841
+        },
+        {
+          "rank": 2,
+          "source": "credit_limit_model_monitoring.md",
+          "chunk_index": 1,
+          "score": 0.22388336779724755
+        },
+        {
+          "rank": 3,
+          "source": "behaviour_scorecard_monitoring.md",
+          "chunk_index": 1,
+          "score": 0.20623947784607638
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 0,
+      "hit_at_3": 1,
+      "reciprocal_rank": 0.3333333333333333,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.5,
+      "ndcg": 0.3065735963827292
+    },
+    {
+      "question": "What performance measures should be reviewed for a collections model?",
+      "expected_document": "collections_model_monitoring.md",
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "previous_validation_report.md",
+          "chunk_index": 2,
+          "score": 0.38138503569823695
+        },
+        {
+          "rank": 2,
+          "source": "validation_policy.md",
+          "chunk_index": 0,
+          "score": 0.28122049591070253
+        },
+        {
+          "rank": 3,
+          "source": "previous_validation_report.md",
+          "chunk_index": 1,
+          "score": 0.2614604786978406
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 0,
+      "hit_at_3": 0,
+      "reciprocal_rank": 0.0,
+      "context_precision": 0.0,
+      "context_recall": 0.0,
+      "ndcg": 0.0
+    },
+    {
+      "question": "May an automated collections monitoring recommendation directly change customer treatment strategy?",
+      "expected_document": "collections_model_monitoring.md",
+      "risk_level": "CRITICAL",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "collections_model_monitoring.md",
+          "chunk_index": 1,
+          "score": 0.28039985489311264
+        },
+        {
+          "rank": 2,
+          "source": "collections_model_monitoring.md",
+          "chunk_index": 0,
+          "score": 0.27552454871518217
+        },
+        {
+          "rank": 3,
+          "source": "credit_limit_model_monitoring.md",
+          "chunk_index": 1,
+          "score": 0.24001200090007502
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.6666666666666666,
+      "context_recall": 1.0,
+      "ndcg": 1.0
+    },
+    {
+      "question": "What special condition requires investigation for a fraud model even when aggregate fraud capture remains stable?",
+      "expected_document": "fraud_model_monitoring.md",
+      "risk_level": "HIGH",
+      "difficulty": "MEDIUM",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "fraud_model_monitoring.md",
+          "chunk_index": 0,
+          "score": 0.402748062220118
+        },
+        {
+          "rank": 2,
+          "source": "fraud_model_monitoring.md",
+          "chunk_index": 1,
+          "score": 0.29356828197599305
+        },
+        {
+          "rank": 3,
+          "source": "previous_validation_report.md",
+          "chunk_index": 2,
+          "score": 0.1776672636296754
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.6666666666666666,
+      "context_recall": 1.0,
+      "ndcg": 1.0
+    },
+    {
+      "question": "Which metrics are specifically required for fraud-model monitoring?",
+      "expected_document": "fraud_model_monitoring.md",
+      "risk_level": "MEDIUM",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "escalation_procedure.md",
+          "chunk_index": 1,
+          "score": 0.3244428422615251
+        },
+        {
+          "rank": 2,
+          "source": "fraud_model_monitoring.md",
+          "chunk_index": 0,
+          "score": 0.3132644744961457
+        },
+        {
+          "rank": 3,
+          "source": "model_monitoring_policy.md",
+          "chunk_index": 0,
+          "score": 0.2683281572999747
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 0,
+      "hit_at_3": 1,
+      "reciprocal_rank": 0.5,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.5,
+      "ndcg": 0.38685280723454163
+    },
+    {
+      "question": "Can the monitoring system autonomously alter a production credit-limit strategy?",
+      "expected_document": "credit_limit_model_monitoring.md",
+      "risk_level": "CRITICAL",
+      "difficulty": "EASY",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "credit_limit_model_monitoring.md",
+          "chunk_index": 1,
+          "score": 0.4200210015751313
+        },
+        {
+          "rank": 2,
+          "source": "previous_validation_report.md",
+          "chunk_index": 1,
+          "score": 0.29461874591456877
+        },
+        {
+          "rank": 3,
+          "source": "credit_limit_model_monitoring.md",
+          "chunk_index": 0,
+          "score": 0.28603877677367767
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.6666666666666666,
+      "context_recall": 1.0,
+      "ndcg": 0.9197207891481876
+    },
+    {
+      "question": "Enterprise policy says RED PSI requires escalation, while the application standard says RED PSI does not automatically mean model deterioration. What evidence should be retrieved to support both statements?",
+      "expected_document": "application_scorecard_monitoring.md",
+      "risk_level": "HIGH",
+      "difficulty": "HARD",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "application_scorecard_monitoring.md",
+          "chunk_index": 0,
+          "score": 0.34299717028501764
+        },
+        {
+          "rank": 2,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.3165869118066518
+        },
+        {
+          "rank": 3,
+          "source": "previous_validation_report.md",
+          "chunk_index": 1,
+          "score": 0.30065841120113157
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "reciprocal_rank": 1.0,
+      "context_precision": 0.3333333333333333,
+      "context_recall": 0.5,
+      "ndcg": 0.6131471927654584
+    },
+    {
+      "question": "A previous validation report refers to two consecutive RED AUC periods. Which enterprise document defines the broader set of targeted revalidation triggers?",
+      "expected_document": "validation_policy.md",
+      "risk_level": "HIGH",
+      "difficulty": "HARD",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.3053415646032819
+        },
+        {
+          "rank": 2,
+          "source": "previous_validation_report.md",
+          "chunk_index": 0,
+          "score": 0.2843611155188746
+        },
+        {
+          "rank": 3,
+          "source": "previous_validation_report.md",
+          "chunk_index": 2,
+          "score": 0.25712973861328997
+        }
+      ],
+      "scored": true,
+      "hit_at_1": 0,
+      "hit_at_3": 0,
+      "reciprocal_rank": 0.0,
+      "context_precision": 0.0,
+      "context_recall": 0.0,
+      "ndcg": 0.0
+    },
+    {
+      "question": "Within how many business days must a RED PSI breach be escalated?",
+      "expected_document": null,
+      "risk_level": "HIGH",
+      "difficulty": "HARD",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "previous_validation_report.md",
+          "chunk_index": 1,
+          "score": 0.3037741256219224
+        },
+        {
+          "rank": 2,
+          "source": "monitoring_policy.md",
+          "chunk_index": 1,
+          "score": 0.23935677693908455
+        },
+        {
+          "rank": 3,
+          "source": "model_governance_policy.md",
+          "chunk_index": 1,
+          "score": 0.22645540682891918
+        }
+      ],
+      "scored": false,
+      "reason": "unanswerable case; retriever cannot abstain"
+    },
+    {
+      "question": "What numerical fairness-disparity threshold causes a model monitoring breach?",
+      "expected_document": null,
+      "risk_level": "HIGH",
+      "difficulty": "HARD",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "validation_policy.md",
+          "chunk_index": 0,
+          "score": 0.2556549962824568
+        },
+        {
+          "rank": 2,
+          "source": "model_governance_policy.md",
+          "chunk_index": 0,
+          "score": 0.253546276418555
+        },
+        {
+          "rank": 3,
+          "source": "fraud_model_monitoring.md",
+          "chunk_index": 1,
+          "score": 0.2506402059138015
+        }
+      ],
+      "scored": false,
+      "reason": "unanswerable case; retriever cannot abstain"
+    },
+    {
+      "question": "How many governance committee members must approve suspension of a model?",
+      "expected_document": null,
+      "risk_level": "CRITICAL",
+      "difficulty": "HARD",
+      "retrieved": [
+        {
+          "rank": 1,
+          "source": "model_governance_policy.md",
+          "chunk_index": 0,
+          "score": 0.26860765467512676
+        },
+        {
+          "rank": 2,
+          "source": "validation_policy.md",
+          "chunk_index": 0,
+          "score": 0.24375747470904358
+        },
+        {
+          "rank": 3,
+          "source": "model_governance_policy.md",
+          "chunk_index": 1,
+          "score": 0.20695933859617893
+        }
+      ],
+      "scored": false,
+      "reason": "unanswerable case; retriever cannot abstain"
+    }
+  ],
+  "metrics": {
+    "overall": {
+      "case_count": 27,
+      "hit_at_1": 0.7407407407407407,
+      "hit_at_3": 0.8518518518518519,
+      "context_precision": 0.4074074074074074,
+      "context_recall": 0.49382716049382713,
+      "ndcg": 0.5405063476473492,
+      "mrr": 0.7901234567901234
+    },
+    "by_risk_level": {
+      "CRITICAL": {
+        "case_count": 3,
+        "hit_at_1": 0.6666666666666666,
+        "hit_at_3": 0.6666666666666666,
+        "context_precision": 0.4444444444444444,
+        "context_recall": 0.6666666666666666,
+        "ndcg": 0.6399069297160626,
+        "mrr": 0.6666666666666666
+      },
+      "HIGH": {
+        "case_count": 12,
+        "hit_at_1": 0.75,
+        "hit_at_3": 0.8333333333333334,
+        "context_precision": 0.4166666666666667,
+        "context_recall": 0.5,
+        "ndcg": 0.5484194160937633,
+        "mrr": 0.7916666666666666
+      },
+      "LOW": {
+        "case_count": 2,
+        "hit_at_1": 1.0,
+        "hit_at_3": 1.0,
+        "context_precision": 0.5,
+        "context_recall": 0.5,
+        "ndcg": 0.617319681505689,
+        "mrr": 1.0
+      },
+      "MEDIUM": {
+        "case_count": 10,
+        "hit_at_1": 0.7,
+        "hit_at_3": 0.9,
+        "context_precision": 0.36666666666666664,
+        "context_recall": 0.4333333333333333,
+        "ndcg": 0.48582782411937,
+        "mrr": 0.7833333333333333
+      }
+    },
+    "by_difficulty": {
+      "EASY": {
+        "case_count": 13,
+        "hit_at_1": 0.8461538461538461,
+        "hit_at_3": 0.9230769230769231,
+        "context_precision": 0.38461538461538464,
+        "context_recall": 0.4487179487179487,
+        "ndcg": 0.5244476203133032,
+        "mrr": 0.8846153846153846
+      },
+      "HARD": {
+        "case_count": 2,
+        "hit_at_1": 0.5,
+        "hit_at_3": 0.5,
+        "context_precision": 0.16666666666666666,
+        "context_recall": 0.25,
+        "ndcg": 0.3065735963827292,
+        "mrr": 0.5
+      },
+      "MEDIUM": {
+        "case_count": 12,
+        "hit_at_1": 0.6666666666666666,
+        "hit_at_3": 0.8333333333333334,
+        "context_precision": 0.47222222222222215,
+        "context_recall": 0.5833333333333334,
+        "ndcg": 0.5968920941366689,
+        "mrr": 0.7361111111111112
+      }
+    }
+  }
+}

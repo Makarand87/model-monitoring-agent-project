@@ -1,6 +1,7 @@
-_A_/model_monitoring_agent/
-_A_/model_monitoring_agent/__init__.py
+# Local RAG vector store
+# .rag/
 
+_A_/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -196,5 +197,3 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Local RAG vector store
-.rag/
