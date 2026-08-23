@@ -18,4 +18,4 @@ read -r commitMessage
 git commit -m "$commitMessage"
 
 # Push to the remote repository
-git push
+git push 
