@@ -1,0 +1,4 @@
+ source /c/Users/Makarand/Documents/model-monitoring-agent/.venv/Scripts/activate
+nano ~/.bashrc
+source ~./bashrc
+source ~/.bashrc

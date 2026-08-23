@@ -1,0 +1,5 @@
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+history >> history.txt
+git status
+git status --short
+git add .; git commit -m "automated command history added _A_"

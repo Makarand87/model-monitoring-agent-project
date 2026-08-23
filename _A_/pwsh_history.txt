@@ -1,0 +1,4 @@
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\Makarand\Documents\model-monitoring-agent\.venv\Scripts\Activate.ps1)
+history >> history.txt
+code $RPOFILE
+code $PROFILE

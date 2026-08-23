@@ -1,3 +1,7 @@
+_A_/model_monitoring_agent/
+_A_/model_monitoring_agent/__init__.py
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
