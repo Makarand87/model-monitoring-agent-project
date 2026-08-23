@@ -62,3 +62,5 @@ chmod 700 .\pushtogit.sh
 chmod 700 ./pushtogit.sh
 echo
 .\pushtogit.bat
+uv sync
+.\pushtogit.bat

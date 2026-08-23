@@ -82,6 +82,7 @@ It also reports **abstention accuracy** across all cases.
 
 These lexical metrics are transparent and reproducible, making them suitable for CI regression tracking. 
 
+[!IMPORTANT]
 They do not understand synonyms, contradictions, or policy meaning, so releases—especially changes affecting HIGH or CRITICAL risk questions—still require human review or a separately validated semantic judge.
 
 
